@@ -2,7 +2,7 @@ import React from 'react';
 import { Route, Routes } from 'react-router-dom';
 import './App.css';
 import Header from './nav/Header';
-import Head from './nav/Head';
+// import Head from './nav/Head';
 import Footer from './nav/Footer';
 import Home from './pages/Home';
 import Index from './pages/Index';
@@ -25,7 +25,7 @@ import NotFound from './pages/404';
 function App() {
   return (
     <div className="app">
-      <Head title="Gumroad - Selling should be as easy as sharing a link." />
+      {/* <Head title="Gumroad - Selling should be as easy as sharing a link." /> */}
       <Header />
       <div className="container">
         <Routes>
