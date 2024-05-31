@@ -18,7 +18,7 @@ import Stats from './pages/Stats';
 import Elsewhere from './pages/Elsewhere';
 import Flickr from './pages/Flickr';
 import FAQ from './pages/FAQ';
-import NotFound from './pages/NotFound';
+import NotFound from './pages/404';
 
 
 

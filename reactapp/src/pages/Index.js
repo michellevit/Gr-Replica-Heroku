@@ -1,11 +1,8 @@
 import React from 'react';
-import Header from './Header';
-import Footer from './Footer';
 
 const Index = ({ showError, errorMessage, emailAddress }) => {
   return (
     <div>
-      <Header showLoginLink={true} />
 
       <div id="intro">
         <div id="video"></div>
@@ -48,7 +45,6 @@ const Index = ({ showError, errorMessage, emailAddress }) => {
         </div>
       </div>
 
-      <Footer />
     </div>
   );
 };

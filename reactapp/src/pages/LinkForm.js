@@ -1,12 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import $ from 'jquery';
-import plupload from 'plupload';
+import Head from '../nav/Head';
+import Header from '../nav/Header';
 
 const LinkForm = ({ editing, permalink, uploadUrl, errorMessage, name, price, url, previewUrl, description, downloadLimit, views, conversion, numberOfDownloads, totalProfit }) => {
   const [showError, setShowError] = useState(false);
-  const [showChart, setShowChart] = useState(false);
-  const [chartMax, setChartMax] = useState(100);
-  const [chartNumbers, setChartNumbers] = useState('');
+  const [linkToShare, setLinkToShare] = useState('');
 
   useEffect(() => {
     $(document).ready(function(){
@@ -25,14 +24,14 @@ const LinkForm = ({ editing, permalink, uploadUrl, errorMessage, name, price, ur
         this.select();
       });
 
-      const uploader = new plupload.Uploader({
+      const uploader = new window.plupload.Uploader({
         runtimes: 'gears,html5,flash,html4',
         browse_button: 'pickfile',
         container: 'container',
         url: uploadUrl,
         use_query_string: false,
         multipart: true,
-        flash_swf_url: '/static/plupload/plupload.flash.swf',
+        flash_swf_url: '/plupload/plupload.flash.swf',
       });
 
       uploader.bind('FilesAdded', function(up, files) {});
@@ -53,14 +52,14 @@ const LinkForm = ({ editing, permalink, uploadUrl, errorMessage, name, price, ur
 
       uploader.init();
 
-      const uploader2 = new plupload.Uploader({
+      const uploader2 = new window.plupload.Uploader({
         runtimes: 'gears,html5,flash,html4',
         browse_button: 'pickpreviewfile',
         container: 'preview_container',
         url: uploadUrl,
         use_query_string: false,
         multipart: true,
-        flash_swf_url: '/static/plupload/plupload.flash.swf',
+        flash_swf_url: '/plupload/plupload.flash.swf',
       });
 
       uploader2.bind('FilesAdded', function(up, files) {});
@@ -82,6 +81,7 @@ const LinkForm = ({ editing, permalink, uploadUrl, errorMessage, name, price, ur
       uploader2.init();
 
       function showConfirm() {
+        // eslint-disable-next-line no-restricted-globals
         var r = confirm("Are you sure you want to delete this link? There's no going back!");
         if (r) {
           postToUrl('/delete/' + permalink);
@@ -110,6 +110,7 @@ const LinkForm = ({ editing, permalink, uploadUrl, errorMessage, name, price, ur
       }
     });
   }, [permalink, uploadUrl]);
+
   return (
     <div>
       <Head title="Link Form" />
@@ -117,9 +118,9 @@ const LinkForm = ({ editing, permalink, uploadUrl, errorMessage, name, price, ur
 
       {editing && (
         <div id="share-box">
-          <a href="javascript:window.open('http://www.facebook.com/dialog/feed?app_id=114816261931958&redirect_uri=http://gumroad.com/home&display=popup&message=Buy%20'+encodeURIComponent(name)+'%20on%20Gumroad!&link='+link_to_share, 'Share', 'width=400,height=200,scrollbars=yes');" className="facebook button">Share on Facebook</a>
-          <p><input type="text" value={link_to_share} id="link_to_share" readOnly="readonly" title="Share this link to sell!" /></p>
-          <a href="javascript:popup('http://twitter.com/share?text=Buy%20'+encodeURIComponent(name)+'%20on%20Gumroad!&via=gumroad&url='+link_to_share);" className="twitter button">Share on Twitter</a>
+          <a href={`javascript:window.open('http://www.facebook.com/dialog/feed?app_id=114816261931958&redirect_uri=http://gumroad.com/home&display=popup&message=Buy%20'+encodeURIComponent(name)+'%20on%20Gumroad!&link='+linkToShare, 'Share', 'width=400,height=200,scrollbars=yes');`} className="facebook button">Share on Facebook</a>
+          <p><input type="text" value={linkToShare} id="link_to_share" readOnly="readonly" title="Share this link to sell!" /></p>
+          <a href={`javascript:popup('http://twitter.com/share?text=Buy%20'+encodeURIComponent(name)+'%20on%20Gumroad!&via=gumroad&url='+linkToShare);`} className="twitter button">Share on Twitter</a>
 
           <div id="analytics-box">
             <p><strong>{views}</strong> views <span className="arrow">&rarr;</span> <img src={`https://chart.googleapis.com/chart?chf=bg,s,00000000&cht=p&chd=t:${conversion},${100-conversion}&chds=0,100&chs=100x100&chco=797874,79787420`} height="20" width="20" alt="Conversion Chart" /> <span>{conversion}%</span> <span className="arrow">&rarr;</span> <strong>{numberOfDownloads}</strong> downloads at ≈ <strong>{price}</strong> <span className="arrow">&rarr;</span> <strong>{totalProfit}</strong> in profit!</p>
