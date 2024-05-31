@@ -11,7 +11,8 @@ Boilerplate code for setting up a Rails-React-PostgreSQL application on Heroku.
 
 ## Table of Contents
 - [Prerequisites](#prerequisites)
-- [How To Set Up Project](#how-to-set-up) 
+- [How To Set Up Project](#how-to-set-up-project) 
+- [How To Set Up Database](#how-to-set-up-db) 
 - [Useful Heroku Commands](#heroku-commands)
 
 
@@ -21,7 +22,7 @@ Boilerplate code for setting up a Rails-React-PostgreSQL application on Heroku.
 - A Heroku account
 - Optional: Heroku CLI installed on your computer (if using database, and also makes debugging easier)
 
-## How To Set Up Project<a name="how-to-set-up"></a>
+## How To Set Up Project<a name="how-to-set-up-project"></a>
 - Create your new repository from the Template (aka this repository)
   - Click the 'Use this template' green button at the top right of this page
   - Select 'Create a new repository' 
@@ -69,6 +70,10 @@ Boilerplate code for setting up a Rails-React-PostgreSQL application on Heroku.
   - Change website title: reactapp/public/index.html
   - Add namespace for controllers: ‘api’
   - Download the Heroku CLI (see useful Heroku commands)
+
+
+## How To Set Up Database<a name="how-to-set-up-db"></a>
+  - Set up Postgres DB
 
 
 ## Useful Heroku Commands <a name="heroku-commands"></a>
