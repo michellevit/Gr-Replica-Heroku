@@ -11,7 +11,7 @@ import Account from './pages/Account';
 import Login from './pages/Login';
 import ForgotPassword from './pages/ForgotPassword';
 import ResetPassword from './pages/ResetPassword';
-import LinkForm from './pages/LinkForm';
+// import LinkForm from './pages/LinkForm';
 import Links from './pages/Links';
 import VisitingLink from './pages/VisitingLink';
 import Stats from './pages/Stats';
@@ -36,7 +36,7 @@ function App() {
           <Route path="/login" element={<Login />} />
           <Route path="/forgotpassword" element={<ForgotPassword />} />
           <Route path="/resetpassword" element={<ResetPassword />} />
-          <Route path="/link" element={<LinkForm />} />
+          {/* <Route path="/link" element={<LinkForm />} /> */}
           <Route path="/links" element={<Links />} />
           <Route path="/visitinglink" element={<VisitingLink />} />
           <Route path="/stats" element={<Stats />} />
