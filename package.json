@@ -1,0 +1,10 @@
+{
+    "name": "boilerplate-rails",
+    "version": "1.0.0",
+    "scripts": {
+      "heroku-postbuild": "cd reactapp && npm install && npm run build && mv build/* ../public/"
+    },
+    "engines": {
+      "node": "14.x"
+    }
+  }
