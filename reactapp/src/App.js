@@ -11,7 +11,7 @@ import Account from './pages/Account';
 import Login from './pages/Login';
 import ForgotPassword from './pages/ForgotPassword';
 import ResetPassword from './pages/ResetPassword';
-import Link from './pages/LinkForm';
+import LinkForm from './pages/LinkForm';
 import Links from './pages/Links';
 import VisitingLink from './pages/VisitingLink';
 import Stats from './pages/Stats';
