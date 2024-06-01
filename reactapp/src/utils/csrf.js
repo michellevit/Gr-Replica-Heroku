@@ -1,4 +1,4 @@
-export function getCsrfToken() {
-    const csrfTokenMeta = document.querySelector('meta[name="csrf-token"]');
-    return csrfTokenMeta ? csrfTokenMeta.content : '';
-  }
+export const getCsrfToken = () => {
+  const token = document.querySelector('meta[name="csrf-token"]');
+  return token ? token.getAttribute('content') : '';
+};

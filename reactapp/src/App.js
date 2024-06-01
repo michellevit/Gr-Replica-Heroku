@@ -20,14 +20,29 @@ import NotFound from "./pages/404";
 // import Loading from "./components/Loading";
 
 function App() {
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [userBalance, setUserBalance] = useState(0);
+
+  useEffect(() => {
+    const checkLoggedInStatus = async () => {
+      const response = await fetch('/api/check_logged_in');
+      const result = await response.json();
+      setIsLoggedIn(result.loggedIn);
+      if (result.loggedIn) {
+        setUserBalance(result.user.balance);
+      }
+    };
+    checkLoggedInStatus();
+  }, []);
+
   return (
     <div className="app">
       <div className="top-bar"></div>
       <div id="wrapper">
-      <Header />
-      <div className="container">
+        <Header showLoginLink={!isLoggedIn} loggedIn={isLoggedIn} userBalance={userBalance} />
+        <div className="container">
           <Routes>
-            <Route path="/" element={<Index />} />
+            <Route path="/" element={<Index initialShowError={false} initialErrorMessage="" />} />
             <Route path="/home" element={<Home />} />
             <Route path="/about" element={<About />} />
             <Route path="/account" element={<Account />} />
@@ -42,10 +57,9 @@ function App() {
             <Route path="/faq" element={<FAQ />} />
             {/* <Route path="*" element={<NotFound />} /> */}
           </Routes>
+        </div>
       </div>
-      
-    </div>
-    <Footer />
+      <Footer />
     </div>
   );
 }
