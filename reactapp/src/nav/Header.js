@@ -5,6 +5,7 @@ const Header = ({ showLoginLink, loggedIn, userBalance, onLinksPage }) => {
     <div>
       <div id="header">
         <a href="/"><h1 id="logo">Gumroad</h1></a>
+
         {showLoginLink ? (
           <p>Have an account? <a href="/login" id="login-link" className="underline">Login</a></p>
         ) : (
@@ -19,13 +20,15 @@ const Header = ({ showLoginLink, loggedIn, userBalance, onLinksPage }) => {
             <p>Thanks for using Gumroad! <a href="mailto:hi@gumroad.com">Feedback?</a></p>
           )
         )}
+
         <ul id="navigation" className="hidden">
-          <li><a href="#">Tour</a></li>
-          <li><a href="#">Examples</a></li>
-          <li><a href="#">Sign up</a></li>
+          <li><a href="/tour">Tour</a></li>
+          <li><a href="/examples">Examples</a></li>
+          <li><a href="/signup">Sign up</a></li>
           <li><a href="/faq">FAQ</a></li>
         </ul>
       </div>
+
       <div className="rule"></div>
     </div>
   );
