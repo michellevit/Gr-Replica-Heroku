@@ -17,27 +17,13 @@ import Elsewhere from "./pages/Elsewhere";
 import Flickr from "./pages/Flickr";
 import FAQ from "./pages/FAQ";
 import NotFound from "./pages/404";
-
-export const CsrfContext = React.createContext();
+import { CsrfProvider } from './contexts/CsrfContext';
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [userBalance, setUserBalance] = useState(0);
-  const [csrfToken, setCsrfToken] = useState('');
 
   useEffect(() => {
-    const fetchCsrfToken = async () => {
-      try {
-        const response = await fetch('/api/csrf_token');
-        const data = await response.json();
-        setCsrfToken(data.csrf_token);
-      } catch (error) {
-        console.error('Error fetching CSRF token:', error);
-      }
-    };
-
-    fetchCsrfToken();
-
     const checkLoggedInStatus = async () => {
       const response = await fetch('/api/check_logged_in');
       const result = await response.json();
@@ -50,7 +36,7 @@ function App() {
   }, []);
 
   return (
-    <CsrfContext.Provider value={csrfToken}>
+    <CsrfProvider>
       <Router>
         <div className="app">
           <div className="top-bar"></div>
@@ -78,7 +64,7 @@ function App() {
           <Footer />
         </div>
       </Router>
-    </CsrfContext.Provider>
+    </CsrfProvider>
   );
 }
 

@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { CsrfContext } from '../App';
+import { CsrfContext } from '../contexts/CsrfContext';
 
 const Index = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
