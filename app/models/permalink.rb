@@ -1,8 +1,8 @@
-class Permalink < ApplicationRecord
-    # Validations
-    validates :permalink, presence: true
+# class Permalink < ApplicationRecord
+#     # Validations
+#     validates :permalink, presence: true
   
-    # Optional associations
+#     # Optional associations
   
-    # Add any necessary callbacks or methods here
-  end
+#     # Add any necessary callbacks or methods here
+#   end
