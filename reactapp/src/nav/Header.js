@@ -3,10 +3,8 @@ import React from 'react';
 const Header = ({ showLoginLink, loggedIn, userBalance, onLinksPage }) => {
   return (
     <div>
-      <div className="top-bar"></div>
-      <div id="loading-indicator">Loading...</div>
 
-      <div id="wrapper">
+
         <div id="header">
           <a href="/"><h1 id="logo">Gumroad</h1></a>
 
@@ -34,7 +32,6 @@ const Header = ({ showLoginLink, loggedIn, userBalance, onLinksPage }) => {
         </div>
 
         <div className="rule"></div>
-      </div>
     </div>
   );
 };

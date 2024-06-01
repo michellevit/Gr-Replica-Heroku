@@ -2,7 +2,7 @@ import React from 'react';
 
 const Index = ({ showError, errorMessage, emailAddress }) => {
   return (
-    <div>
+    <div className="container">
 
       <div id="intro">
         <div id="video"></div>
