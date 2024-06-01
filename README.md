@@ -113,6 +113,13 @@ Boilerplate code for setting up a Rails-React-PostgreSQL application on Heroku.
         end
       end
       `````
+  - Commit the code to GitHub
+    - `git add .`
+    - `git commit -m "Add new table migration`
+    - `git push origin main`
+  - Run the following comand to migrate the database on Heroku: 
+    - `heroku run rails db:migrate --app your-app-name`
+
 
 
 ## Useful Heroku Commands <a name="heroku-commands"></a>
