@@ -42,7 +42,7 @@ function App() {
           <Header showLoginLink={!isLoggedIn} loggedIn={isLoggedIn} userBalance={userBalance} />
           <div className="container">
             <Routes>
-              <Route path="/" element={<Index initialShowError={false} initialErrorMessage="" />} />
+              <Route path="/" element={<Index />} />
               <Route path="/home" element={<Home />} />
               <Route path="/about" element={<About />} />
               <Route path="/account" element={<Account />} />
