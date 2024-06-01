@@ -11,8 +11,12 @@ const Index = () => {
     const checkLoggedInStatus = async () => {
       try {
         const response = await fetch('/api/check_logged_in');
-        const result = await response.json();
-        setIsLoggedIn(result.loggedIn);
+        if (response.ok) {
+          const result = await response.json();
+          setIsLoggedIn(result.loggedIn);
+        } else {
+          console.error('Error checking logged in status: ', response.statusText);
+        }
       } catch (error) {
         console.error('Error checking logged in status:', error);
       }
