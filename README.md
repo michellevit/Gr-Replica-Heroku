@@ -126,8 +126,6 @@ Boilerplate code for setting up a Rails-React-PostgreSQL application on Heroku.
   - Add a .env file to the project with the following var: 
     - CORS_ORIGINS=http://localhost:3000
   - In the terminal run `bundle install`
-  - Add this line to the top of the `config/application.rb' file (I AM NOT SURE IF THIS IS GOOD, CAUSED ISSUES WITH HEROKU):
-    - `require 'dotenv/load'`
   - Start the rails server
     - Run `rails server`
     - Create a table migration file: 
