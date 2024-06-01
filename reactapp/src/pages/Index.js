@@ -1,10 +1,11 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { getCsrfToken } from '../utils/csrf';
+import { CsrfContext } from '../App';
 
 const Index = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const navigate = useNavigate();
+  const csrfToken = useContext(CsrfContext);
 
   useEffect(() => {
     const checkLoggedInStatus = async () => {
@@ -31,8 +32,7 @@ const Index = () => {
       email: event.target.email.value,
       password: event.target.password.value,
     };
-    const csrfToken = getCsrfToken();
-    console.log('CSRF Token:', csrfToken);
+
     try {
       const response = await fetch('/api/signup', {
         method: 'POST',
