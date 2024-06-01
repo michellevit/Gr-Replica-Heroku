@@ -18,18 +18,23 @@ const Index = ({ initialShowError, initialErrorMessage }) => {
 
   useEffect(() => {
     if (isLoggedIn) {
-      navigate('/home'); 
+      navigate('/home'); // Redirect to Home page if logged in
     }
   }, [isLoggedIn, navigate]);
 
+  const handleSignup = async (e) => {
+    e.preventDefault();
+    const formData = {
+      email: e.target.email.value,
+      password: e.target.password.value,
+    };
 
-  const handleSignup = async (formData) => {
     const response = await fetch('/api/signup', {
       method: 'POST',
       headers: {
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
       },
-      body: JSON.stringify(formData)
+      body: JSON.stringify(formData),
     });
 
     if (response.ok) {
@@ -62,9 +67,13 @@ const Index = ({ initialShowError, initialErrorMessage }) => {
         </div>
         <form id="large-form" onSubmit={handleSignup}>
           {showError ? (
-            <h3>Sign up for Gumroad <small className="error">{errorMessage}</small></h3>
+            <h3>
+              Sign up for Gumroad <small className="error">{errorMessage}</small>
+            </h3>
           ) : (
-            <h3>Sign up for Gumroad <small>Fill in the simple form below and start selling in minutes</small></h3>
+            <h3>
+              Sign up for Gumroad <small>Fill in the simple form below and start selling in minutes</small>
+            </h3>
           )}
           <input type="text" placeholder="Email Address" name="email" required />
           <input type="password" placeholder="Password" name="password" required />
@@ -74,8 +83,12 @@ const Index = ({ initialShowError, initialErrorMessage }) => {
       </div>
       <div id="press">
         <div className="testimonial">
-          <blockquote>&#8220;Incredibly easy&hellip; in fact, just writing this, I&#8217;m coming up with ideas and kicking myself for having not sold things in the past. Fortunately, moving forward, I won&#8217;t have to kick myself anymore.&#8221;</blockquote>
-          <span className="writer">Brad McCarty  - <a href="http://thenextweb.com/apps/2011/04/09/gumroad-sell-digital-goods-with-a-link-no-storefront-needed/">The Next Web</a></span>
+          <blockquote>
+            &#8220;Incredibly easy&hellip; in fact, just writing this, I&#8217;m coming up with ideas and kicking myself for having not sold things in the past. Fortunately, moving forward, I won&#8217;t have to kick myself anymore.&#8221;
+          </blockquote>
+          <span className="writer">
+            Brad McCarty - <a href="http://thenextweb.com/apps/2011/04/09/gumroad-sell-digital-goods-with-a-link-no-storefront-needed/">The Next Web</a>
+          </span>
         </div>
       </div>
     </div>

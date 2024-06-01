@@ -1,17 +1,11 @@
 module Api
-  class SessionsController < ApplicationController
+  class SessionsController < BaseController
     def check_logged_in
       if logged_in?
-        render json: { loggedIn: true }
+        render json: { loggedIn: true, user: current_user }
       else
         render json: { loggedIn: false }
       end
-    end
-    
-    private
-  
-    def logged_in?
-      !!session[:user_id]
     end
   end
 end
