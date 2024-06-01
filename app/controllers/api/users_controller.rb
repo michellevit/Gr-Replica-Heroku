@@ -1,5 +1,3 @@
-require 'user'
-
 module Api
   class UsersController < BaseController
     protect_from_forgery with: :null_session
