@@ -73,7 +73,20 @@ Boilerplate code for setting up a Rails-React-PostgreSQL application on Heroku.
 
 
 ## How To Set Up Database<a name="how-to-set-up-db"></a>
-  - Set up Postgres DB
+- Already done:   
+  - In the previous step the PostgreSQL add-on should have been added :
+    - In the Heroku app's Resources Tab:
+      - In the Add-ons section search ‘Heroku Postgres’ + submit order form to add it
+  - The 'pg' gem has already been added to the Gemfile
+  - The config/database.yml file uses the DATABASE_URL env var provided by Heroku
+- Make sure the Heroku CLI is downloaded
+- Initialize the database:
+  - In the terminal run:
+    - `heroku run rails db:create --app your-app-name`
+    - `heroku run rails db:migrate --app your-app-name`
+    - `git add .`
+    - `git commit -m 'initialize db'`
+    - `git push origin main` 
 
 
 ## Useful Heroku Commands <a name="heroku-commands"></a>
