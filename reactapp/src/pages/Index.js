@@ -8,16 +8,20 @@ const Index = () => {
 
   useEffect(() => {
     const checkLoggedInStatus = async () => {
-      const response = await fetch('/api/check_logged_in');
-      const result = await response.json();
-      setIsLoggedIn(result.loggedIn);
+      try {
+        const response = await fetch('/api/check_logged_in');
+        const result = await response.json();
+        setIsLoggedIn(result.loggedIn);
+      } catch (error) {
+        console.error('Error checking logged in status:', error);
+      }
     };
     checkLoggedInStatus();
   }, []);
 
   useEffect(() => {
     if (isLoggedIn) {
-      navigate('/home'); 
+      navigate('/home');
     }
   }, [isLoggedIn, navigate]);
 
@@ -28,17 +32,25 @@ const Index = () => {
       password: event.target.password.value,
     };
     const csrfToken = getCsrfToken();
-    const response = await fetch('/api/signup', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'X-CSRF-Token': csrfToken
-      },
-      body: JSON.stringify(formData)
-    });
+    console.log('CSRF Token:', csrfToken);
+    try {
+      const response = await fetch('/api/signup', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-CSRF-Token': csrfToken,
+        },
+        body: JSON.stringify(formData),
+      });
 
-    if (response.ok) {
-      setIsLoggedIn(true);
+      if (response.ok) {
+        setIsLoggedIn(true);
+      } else {
+        const errorData = await response.json();
+        console.error('Signup error:', errorData);
+      }
+    } catch (error) {
+      console.error('Error during signup:', error);
     }
   };
 
