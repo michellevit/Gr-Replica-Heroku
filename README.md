@@ -92,7 +92,7 @@ Boilerplate code for setting up a Rails-React-PostgreSQL application on Heroku.
     - To check/list all databases in your Postgres: 
       - run: \l
 
-  - Modify the config/database.yml file (I AM NOT SURE IF THIS IS GOOD, CAUSED ISSUES WITH HEROKU): 
+  - Modify the config/database.yml file: 
     - replace this code: 
     ```
     development:
@@ -115,7 +115,7 @@ Boilerplate code for setting up a Rails-React-PostgreSQL application on Heroku.
       - DATABASE_USERNAME
       - DATABASE_PASSWORD
   - In the VSCode terminal of you projecty folder, run: rails db:schema:dump
-- Initialize the database on Heroku (I AM NOT SURE IF THIS IS GOOD, CAUSED ISSUES WITH HEROKU):
+- Initialize the database on Heroku :
   - In the terminal run:
     - `heroku run rails db:create --app your-app-name`
     - `heroku run rails db:migrate --app your-app-name`

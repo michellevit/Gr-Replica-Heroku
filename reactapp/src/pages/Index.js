@@ -1,4 +1,5 @@
 import React from 'react';
+import SignupForm from './SignupForm';
 
 const Index = ({ showError, errorMessage, emailAddress }) => {
   return (
@@ -29,11 +30,7 @@ const Index = ({ showError, errorMessage, emailAddress }) => {
           ) : (
             <h3>Sign up for Gumroad <small>Fill in the simple form below and start selling in minutes</small></h3>
           )}
-          <p>
-            <input type="text" placeholder="Email Address" name="email" value={emailAddress || ''} />
-            <input type="password" placeholder="Password" name="password" />
-            <button type="submit">Start selling!</button>
-          </p>
+          <SignupForm onSubmit={handleSignup} />
           <div className="rainbow bar"></div>
         </form>
       </div> {/* intro */}
