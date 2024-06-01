@@ -114,7 +114,7 @@ Boilerplate code for setting up a Rails-React-PostgreSQL application on Heroku.
       - DATABASE_NAME
       - DATABASE_USERNAME
       - DATABASE_PASSWORD
-    
+  - In the VSCode terminal of you projecty folder, run: rails db:schema:dump
 - Initialize the database on Heroku:
   - In the terminal run:
     - `heroku run rails db:create --app your-app-name`
@@ -152,13 +152,15 @@ Boilerplate code for setting up a Rails-React-PostgreSQL application on Heroku.
     - `git add .`
     - `git commit -m "Add new table migration`
     - `git push origin main`
+  - Run the following command to migrate the database locally: 
+    - rails db:migrate
   - Run the following comand to migrate the database on Heroku: 
     - `heroku run rails db:migrate --app your-app-name`
   - Check if the tables are up on the server:
     - Run: 
       - `heroku run rails console --app gr-replica`
       - `ActiveRecord::Base.connection.tables`
-
+ 
 
 
 ## Useful Heroku Commands <a name="heroku-commands"></a>

@@ -10,8 +10,64 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 0) do
+ActiveRecord::Schema[7.1].define(version: 2024_06_01_023502) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  create_table "files", force: :cascade do |t|
+    t.string "unique_permalink", null: false
+    t.string "blob_key"
+    t.string "file_name"
+    t.string "file_type"
+    t.datetime "date", default: -> { "CURRENT_TIMESTAMP" }
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "links", force: :cascade do |t|
+    t.string "owner", null: false
+    t.string "name", null: false
+    t.string "unique_permalink", null: false
+    t.string "url", null: false
+    t.string "preview_url"
+    t.text "description"
+    t.float "price", default: 1.0, null: false
+    t.datetime "create_date", default: -> { "CURRENT_TIMESTAMP" }
+    t.integer "length_of_exclusivity", default: 0
+    t.integer "number_of_paid_downloads", default: 0
+    t.integer "number_of_downloads", default: 0
+    t.integer "download_limit", default: 0
+    t.integer "number_of_views", default: 0
+    t.float "balance", default: 0.0
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "permalinks", force: :cascade do |t|
+    t.string "permalink", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "purchases", force: :cascade do |t|
+    t.string "owner", null: false
+    t.string "unique_permalink", null: false
+    t.float "price", null: false
+    t.datetime "create_date", default: -> { "CURRENT_TIMESTAMP" }
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "users", force: :cascade do |t|
+    t.string "email", null: false
+    t.string "payment_address"
+    t.string "name"
+    t.string "password", null: false
+    t.string "reset_hash"
+    t.float "balance", default: 0.0
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["email"], name: "index_users_on_email", unique: true
+  end
 
 end
