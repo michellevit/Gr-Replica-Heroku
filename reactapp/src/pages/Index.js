@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { getCsrfToken } from '../utils/csrf';
 
 const Index = ({ initialShowError, initialErrorMessage }) => {
   const [showError, setShowError] = useState(initialShowError);
@@ -18,23 +19,24 @@ const Index = ({ initialShowError, initialErrorMessage }) => {
 
   useEffect(() => {
     if (isLoggedIn) {
-      navigate('/home'); // Redirect to Home page if logged in
+      navigate('/home'); 
     }
   }, [isLoggedIn, navigate]);
 
-  const handleSignup = async (e) => {
-    e.preventDefault();
+  const handleSignup = async (event) => {
+    event.preventDefault();
     const formData = {
-      email: e.target.email.value,
-      password: e.target.password.value,
+      email: event.target.email.value,
+      password: event.target.password.value,
     };
-
+    const csrfToken = getCsrfToken();
     const response = await fetch('/api/signup', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
+        'X-CSRF-Token': csrfToken
       },
-      body: JSON.stringify(formData),
+      body: JSON.stringify(formData)
     });
 
     if (response.ok) {
