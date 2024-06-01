@@ -17,7 +17,6 @@ import Elsewhere from "./pages/Elsewhere";
 import Flickr from "./pages/Flickr";
 import FAQ from "./pages/FAQ";
 import NotFound from "./pages/404";
-// import Loading from "./components/Loading";
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -36,31 +35,33 @@ function App() {
   }, []);
 
   return (
-    <div className="app">
-      <div className="top-bar"></div>
-      <div id="wrapper">
-        <Header showLoginLink={!isLoggedIn} loggedIn={isLoggedIn} userBalance={userBalance} />
-        <div className="container">
-          <Routes>
-            <Route path="/" element={<Index initialShowError={false} initialErrorMessage="" />} />
-            <Route path="/home" element={<Home />} />
-            <Route path="/about" element={<About />} />
-            <Route path="/account" element={<Account />} />
-            <Route path="/login" element={<Login />} />
-            <Route path="/forgotpassword" element={<ForgotPassword />} />
-            <Route path="/resetpassword" element={<ResetPassword />} />
-            <Route path="/links" element={<Links />} />
-            <Route path="/visitinglink" element={<VisitingLink />} />
-            <Route path="/stats" element={<Stats />} />
-            <Route path="/elsewhere" element={<Elsewhere />} />
-            <Route path="/flickr" element={<Flickr />} />
-            <Route path="/faq" element={<FAQ />} />
-            {/* <Route path="*" element={<NotFound />} /> */}
-          </Routes>
+    <Router>
+      <div className="app">
+        <div className="top-bar"></div>
+        <div id="wrapper">
+          <Header showLoginLink={!isLoggedIn} loggedIn={isLoggedIn} userBalance={userBalance} />
+          <div className="container">
+            <Routes>
+              <Route path="/" element={<Index initialShowError={false} initialErrorMessage="" />} />
+              <Route path="/home" element={<Home />} />
+              <Route path="/about" element={<About />} />
+              <Route path="/account" element={<Account />} />
+              <Route path="/login" element={<Login />} />
+              <Route path="/forgotpassword" element={<ForgotPassword />} />
+              <Route path="/resetpassword" element={<ResetPassword />} />
+              <Route path="/links" element={<Links />} />
+              <Route path="/visitinglink" element={<VisitingLink />} />
+              <Route path="/stats" element={<Stats />} />
+              <Route path="/elsewhere" element={<Elsewhere />} />
+              <Route path="/flickr" element={<Flickr />} />
+              <Route path="/faq" element={<FAQ />} />
+              <Route path="*" element={<NotFound />} />
+            </Routes>
+          </div>
         </div>
+        <Footer />
       </div>
-      <Footer />
-    </div>
+    </Router>
   );
 }
 
