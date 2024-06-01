@@ -87,6 +87,32 @@ Boilerplate code for setting up a Rails-React-PostgreSQL application on Heroku.
     - `git add .`
     - `git commit -m 'initialize db'`
     - `git push origin main` 
+- Now that the database has been created, set up the tables
+  - Add a .env file to the project with the following var: 
+    - CORS_ORIGINS=http://localhost:3000
+    - Add '.env' to the .gitignore file
+  - Add the dotenv gem to the Gemfile: 
+    - Add this line: `gem 'dotenv-rails', groups: [:development, :test]`
+    - In the temrinal run `bundle install`
+    - Add this line to the top of the `config/application.rb' file:
+      - `require 'dotenv/load'`
+  - Start the rails server
+    - Run `rails server`
+    - Create a table migration file: 
+      - Run: `rails generate migration Create[YOURTABLENAMEHERE]`
+    - Go to the folder db/migrate and find the newly created file
+      - Example: 
+      ```ruby
+      class CreateProducts < ActiveRecord::Migration[7.1]
+        def change
+          create_table :products do |t|
+            t.string :name
+
+            t.timestamps
+          end
+        end
+      end
+      `````
 
 
 ## Useful Heroku Commands <a name="heroku-commands"></a>
