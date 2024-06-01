@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import './App.css';
-import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+import { Route, Routes } from "react-router-dom";
 import Header from "./nav/Header";
 import Footer from "./nav/Footer";
 import Home from "./pages/Home";
@@ -35,7 +35,6 @@ function App() {
   }, []);
 
   return (
-    <Router>
       <div className="app">
         <div className="top-bar"></div>
         <div id="wrapper">
@@ -61,7 +60,6 @@ function App() {
         </div>
         <Footer />
       </div>
-    </Router>
   );
 }
 
