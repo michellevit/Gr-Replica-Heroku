@@ -80,7 +80,42 @@ Boilerplate code for setting up a Rails-React-PostgreSQL application on Heroku.
   - The 'pg' gem has already been added to the Gemfile
   - The config/database.yml file uses the DATABASE_URL env var provided by Heroku
 - Make sure the Heroku CLI is downloaded
-- Initialize the database:
+- Initialize the database locally: 
+  - download Postgres
+  - setup a username/password
+  - Create a database for this project: 
+    - Open a new terminal
+    - type: psql -U your_username (default username is postgres)
+    - login
+    - In the postgres shell: 
+      - CREATE DATABASE [your-db-name];
+    - To check/list all databases in your Postgres: 
+      - run: \l
+
+  - Modify the config/database.yml file: 
+    - replace this code: 
+    ```
+    development:
+    <<: *default
+    database: rails_project_development
+    ```
+    - with this code: 
+    ``` 
+    development:
+    <<: *default
+    adapter: postgresql
+    encoding: unicode
+    database: <%= ENV['DATABASE_NAME'] %>
+    username: <%= ENV['DATABASE_USERNAME'] %>
+    password: <%= ENV['DATABASE_PASSWORD'] %>
+    host: localhost
+    ```
+    - Add environment vars to the .env file:
+      - DATABASE_NAME
+      - DATABASE_USERNAME
+      - DATABASE_PASSWORD
+    
+- Initialize the database on Heroku:
   - In the terminal run:
     - `heroku run rails db:create --app your-app-name`
     - `heroku run rails db:migrate --app your-app-name`
@@ -119,6 +154,10 @@ Boilerplate code for setting up a Rails-React-PostgreSQL application on Heroku.
     - `git push origin main`
   - Run the following comand to migrate the database on Heroku: 
     - `heroku run rails db:migrate --app your-app-name`
+  - Check if the tables are up on the server:
+    - Run: 
+      - `heroku run rails console --app gr-replica`
+      - `ActiveRecord::Base.connection.tables`
 
 
 
