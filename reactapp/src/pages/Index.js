@@ -2,9 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { getCsrfToken } from '../utils/csrf';
 
-const Index = ({ initialShowError, initialErrorMessage }) => {
-  const [showError, setShowError] = useState(initialShowError);
-  const [errorMessage, setErrorMessage] = useState(initialErrorMessage);
+const Index = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const navigate = useNavigate();
 
@@ -40,12 +38,7 @@ const Index = ({ initialShowError, initialErrorMessage }) => {
     });
 
     if (response.ok) {
-      setShowError(false);
       setIsLoggedIn(true);
-    } else {
-      const errorData = await response.json();
-      setErrorMessage(errorData.error);
-      setShowError(true);
     }
   };
 
@@ -68,15 +61,9 @@ const Index = ({ initialShowError, initialErrorMessage }) => {
           <p id="description">Selling stuff has always been a pain. No longer! Get back to creating. <br />We make selling stuff as easy as sharing a link.</p>
         </div>
         <form id="large-form" onSubmit={handleSignup}>
-          {showError ? (
-            <h3>
-              Sign up for Gumroad <small className="error">{errorMessage}</small>
-            </h3>
-          ) : (
-            <h3>
-              Sign up for Gumroad <small>Fill in the simple form below and start selling in minutes</small>
-            </h3>
-          )}
+          <h3>
+            Sign up for Gumroad <small>Fill in the simple form below and start selling in minutes</small>
+          </h3>
           <input type="text" placeholder="Email Address" name="email" required />
           <input type="password" placeholder="Password" name="password" required />
           <button type="submit">Start selling!</button>
