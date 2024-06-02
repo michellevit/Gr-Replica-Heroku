@@ -8,7 +8,7 @@ const Login = () => {
   const [errorMessage, setErrorMessage] = useState('');
   const [emailAddress, setEmailAddress] = useState('');
   const navigate = useNavigate();
-  const csrfToken = useContext(CsrfContext); // Use context to get CSRF token
+  const csrfToken = useContext(CsrfContext); 
   
   useEffect(() => {
     const checkLoggedInStatus = async () => {
