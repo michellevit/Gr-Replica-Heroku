@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { getCsrfToken } from '../utils/csrf';
 
 const Login = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -26,14 +27,6 @@ const Login = () => {
   }, []);
 
   useEffect(() => {
-    fetch('/api/csrf_token')
-      .then(response => response.json())
-      .then(data => {
-        document.querySelector('meta[name="csrf-token"]').content = data.csrf_token;
-      });
-  }, []);
-
-  useEffect(() => {
     if (isLoggedIn) {
       navigate('/home');
     }
@@ -41,11 +34,12 @@ const Login = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    const csrfToken = getCsrfToken();
     const response = await fetch('/api/login', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'X-CSRF-Token': document.querySelector('meta[name="csrf-token"]').content
+        'X-CSRF-Token': csrfToken
       },
       body: JSON.stringify({
         email: emailAddress,

@@ -160,11 +160,11 @@ Boilerplate code for setting up a Rails-React-PostgreSQL application on Heroku.
 
 ## Useful Heroku Commands <a name="heroku-commands"></a>
 - Login: `heroku login`
-- View Error Logs: `heroku logs -a [your app name]`
-- Restart App: `heroku restart -a [your app name]`
-- Migrate DB changes: `heroku run rails db:migrate -a [your app name]`
-- Run the rails console: `heroku run rails console -a [your app name]`
-- Seed the db: `heroku run rails db:seed -a [your app name]`
+- View Error Logs: `heroku logs -a gr-replica`
+- Restart App: `heroku restart -a gr-replica`
+- Migrate DB changes: `heroku run rails db:migrate -a gr-replica`
+- Run the rails console: `heroku run rails console -a gr-replica`
+- Seed the db: `heroku run rails db:seed -a gr-replica`
 
 
 
