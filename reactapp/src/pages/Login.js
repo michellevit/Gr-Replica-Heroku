@@ -40,7 +40,7 @@ const Login = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("CSRF TOKEN: ", csrf_token)
+    console.log("CSRF TOKEN: ", csrfToken)
     if (!csrfToken) {
       setShowError(true);
       setErrorMessage('CSRF token not found.');
