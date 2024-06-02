@@ -9,12 +9,13 @@ const Login = () => {
   const [emailAddress, setEmailAddress] = useState('');
   const navigate = useNavigate();
   const csrfToken = useContext(CsrfContext); 
-  
+  const apiUrl = process.env.REACT_APP_API_URL;
+
   useEffect(() => {
     console.log("checking if user logged in")
     const checkLoggedInStatus = async () => {
       try {
-        const response = await fetch('/api/check_logged_in');
+        const response = await fetch(`${apiUrl}/api/check_logged_in`);
         if (response.ok) {
           const result = await response.json();
           setIsLoggedIn(result.loggedIn);
@@ -46,7 +47,7 @@ const Login = () => {
       setErrorMessage('CSRF token not found.');
       return;
     }
-    const response = await fetch('/api/login', {
+    const response = await fetch(`${apiUrl}/api/login'`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

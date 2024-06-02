@@ -5,11 +5,13 @@ export const CsrfContext = createContext();
 
 export const CsrfProvider = ({ children }) => {
   const [csrfToken, setCsrfToken] = useState('');
+  const apiUrl = process.env.REACT_APP_API_URL;
 
   useEffect(() => {
+    console.log('API URL:', apiUrl);
     const fetchCsrfToken = async () => {
       try {
-        const response = await fetch('/api/csrf_token');
+        const response = await fetch(`${apiUrl}/api/csrf_token`);
         const data = await response.json();
         setCsrfToken(data.csrf_token);
       } catch (error) {

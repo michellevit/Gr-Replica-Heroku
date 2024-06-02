@@ -17,11 +17,12 @@ const VisitingLink = ({
   const [cardExpiryMonth, setCardExpiryMonth] = useState(expiryMonth);
   const [cardExpiryYear, setCardExpiryYear] = useState(expiryYear);
   const [cardSecurityCode, setCardSecurityCode] = useState('');
+  const apiUrl = process.env.REACT_APP_API_URL;
 
   const processPayment = async (e) => {
     e.preventDefault();
     try {
-      const response = await fetch(`/l/${permalink}`, {
+      const response = await fetch(`${apiUrl}/l/${permalink}`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/x-www-form-urlencoded',

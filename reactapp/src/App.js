@@ -22,10 +22,11 @@ import { CsrfProvider } from './contexts/CsrfContext';
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [userBalance, setUserBalance] = useState(0);
+  const apiUrl = process.env.REACT_APP_API_URL;
 
   useEffect(() => {
     const checkLoggedInStatus = async () => {
-      const response = await fetch('/api/check_logged_in');
+      const response = await fetch(`${apiUrl}/api/check_logged_in`);
       const result = await response.json();
       setIsLoggedIn(result.loggedIn);
       if (result.loggedIn) {

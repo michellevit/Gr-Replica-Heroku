@@ -6,11 +6,12 @@ const Index = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const navigate = useNavigate();
   const csrfToken = useContext(CsrfContext);
+  const apiUrl = process.env.REACT_APP_API_URL;
 
   useEffect(() => {
     const checkLoggedInStatus = async () => {
       try {
-        const response = await fetch('/api/check_logged_in');
+        const response = await fetch(`${apiUrl}/api/check_logged_in`);
         if (response.ok) {
           const result = await response.json();
           setIsLoggedIn(result.loggedIn);
@@ -40,7 +41,7 @@ const Index = () => {
     console.log('Form Data:', formData); 
   
     try {
-      const response = await fetch('/api/signup', {
+      const response = await fetch(`${apiUrl}/api/check_logged_in`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
