@@ -6,6 +6,7 @@ Rails.application.routes.draw do
     post 'signup', to: 'users#create'
     get 'check_logged_in', to: 'sessions#check_logged_in'
     get 'csrf_token', to: 'csrf#index'
+    post 'login', to: 'sessions#create'
   end
 
   get '*path', to: 'application#react_app'

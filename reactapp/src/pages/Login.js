@@ -1,18 +1,71 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 const Login = () => {
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [showError, setShowError] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
   const [emailAddress, setEmailAddress] = useState('');
+  const navigate = useNavigate();
+  
+  useEffect(() => {
+    const checkLoggedInStatus = async () => {
+      try {
+        const response = await fetch('/api/check_logged_in');
+        if (response.ok) {
+          const result = await response.json();
+          setIsLoggedIn(result.loggedIn);
+        } else {
+          console.error('Error checking logged in status: ', response.statusText);
+        }
+      } catch (error) {
+        console.error('Error checking logged in status:', error);
+      }
+    };
+    checkLoggedInStatus();
+  }, []);
 
-  const handleSubmit = (e) => {
+  useEffect(() => {
+    fetch('/api/csrf_token')
+      .then(response => response.json())
+      .then(data => {
+        document.querySelector('meta[name="csrf-token"]').content = data.csrf_token;
+      });
+  }, []);
+
+  useEffect(() => {
+    if (isLoggedIn) {
+      navigate('/home');
+    }
+  }, [isLoggedIn, navigate]);
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // Add logic to handle form submission
+    const response = await fetch('/api/login', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-CSRF-Token': document.querySelector('meta[name="csrf-token"]').content
+      },
+      body: JSON.stringify({
+        email: emailAddress,
+        password: e.target.password.value
+      })
+    });
+  
+    const data = await response.json();
+  
+    if (response.ok) {
+      setShowError(false);
+      setIsLoggedIn(true);
+    } else {
+      setShowError(true);
+      setErrorMessage(data.error);
+    }
   };
 
   return (
     <div>
-
       <form id="large-form" onSubmit={handleSubmit}>
         {showError ? (
           <h3>Log in to Gumroad <small className="error">{errorMessage}</small></h3>
@@ -32,7 +85,6 @@ const Login = () => {
         </p>
         <div className="rainbow bar"></div>
       </form>
-
       <p id="below-form-p"><a href="/forgot-password">Forgot your password?</a> We all do.</p>
     </div>
   );

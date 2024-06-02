@@ -166,3 +166,45 @@ Boilerplate code for setting up a Rails-React-PostgreSQL application on Heroku.
 - Run the rails console: `heroku run rails console -a [your app name]`
 - Seed the db: `heroku run rails db:seed -a [your app name]`
 
+
+
+## Directory
+| - app
+| | - assets/
+| | - channels/
+| | - controllers/
+| | - helpers/
+| | - javascript/
+| | - jobs/
+| | - mailers/
+| | - models/
+| | - views/
+| | | - layouts
+| - bin/
+| - config/
+| - db/
+| - lib/
+| - log/
+| - node_modules/
+| - public/
+| - reactapp/
+| - storage/
+| - temp/
+| | - static 
+| - test/
+| - tmp/
+| - vendor/
+| - .dockerignore
+| - .env
+| - .gitattributes
+| - .gitignore
+| - .ruby-version
+| - config.ru
+| - Dockerfile
+| - Gemfile
+| - Gemfile.lock
+| - package-lock.json
+| - package.json
+| - Procfile
+| - Rakefile
+| - README.md
