@@ -36,7 +36,9 @@ const Index = () => {
       email: event.target.email.value,
       password: event.target.password.value,
     };
-
+  
+    console.log('Form Data:', formData); 
+  
     try {
       const response = await fetch('/api/signup', {
         method: 'POST',
@@ -46,7 +48,7 @@ const Index = () => {
         },
         body: JSON.stringify(formData),
       });
-
+  
       if (response.ok) {
         setIsLoggedIn(true);
       } else {
