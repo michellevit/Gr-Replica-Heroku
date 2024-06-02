@@ -32,6 +32,7 @@ const Login = () => {
   }, []);
 
   useEffect(() => {
+    console.log("REDIRECT BC LOGGED IN")
     if (isLoggedIn) {
       navigate('/home');
     }
@@ -39,6 +40,7 @@ const Login = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    console.log("CSRF TOKEN: ", csrf_token)
     if (!csrfToken) {
       setShowError(true);
       setErrorMessage('CSRF token not found.');
