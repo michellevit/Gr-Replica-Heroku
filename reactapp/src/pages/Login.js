@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { getCsrfToken } from '../utils/csrf';
+import { CsrfContext } from '../contexts/CsrfContext';
 
 const Login = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -8,6 +8,7 @@ const Login = () => {
   const [errorMessage, setErrorMessage] = useState('');
   const [emailAddress, setEmailAddress] = useState('');
   const navigate = useNavigate();
+  const csrfToken = useContext(CsrfContext); // Use context to get CSRF token
   
   useEffect(() => {
     const checkLoggedInStatus = async () => {
@@ -34,12 +35,16 @@ const Login = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const csrfToken = getCsrfToken();
+    if (!csrfToken) {
+      setShowError(true);
+      setErrorMessage('CSRF token not found.');
+      return;
+    }
     const response = await fetch('/api/login', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'X-CSRF-Token': csrfToken
+        'X-CSRF-Token': csrfToken 
       },
       body: JSON.stringify({
         email: emailAddress,
