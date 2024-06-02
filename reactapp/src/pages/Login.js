@@ -11,17 +11,21 @@ const Login = () => {
   const csrfToken = useContext(CsrfContext); 
   
   useEffect(() => {
+    console.log("checking if user logged in")
     const checkLoggedInStatus = async () => {
       try {
         const response = await fetch('/api/check_logged_in');
         if (response.ok) {
           const result = await response.json();
           setIsLoggedIn(result.loggedIn);
+          console.log("LOGGED IN STATUS: ", result.loggedIn)
         } else {
           console.error('Error checking logged in status: ', response.statusText);
+          console.log("ERROR: can't tell if user logged in")
         }
       } catch (error) {
         console.error('Error checking logged in status:', error);
+        console.log("ERROR: can't tell if user logged in")
       }
     };
     checkLoggedInStatus();
