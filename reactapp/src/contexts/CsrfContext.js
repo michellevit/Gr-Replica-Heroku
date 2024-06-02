@@ -8,10 +8,11 @@ export const CsrfProvider = ({ children }) => {
   const apiUrl = process.env.REACT_APP_API_URL;
 
   useEffect(() => {
-    console.log('API URL:', apiUrl);
     const fetchCsrfToken = async () => {
       try {
-        const response = await fetch(`${apiUrl}/api/csrf_token`);
+        const response = await fetch(`${apiUrl}/api/csrf_token`, {
+          credentials: 'include',
+        });
         const data = await response.json();
         setCsrfToken(data.csrf_token);
       } catch (error) {
@@ -20,7 +21,7 @@ export const CsrfProvider = ({ children }) => {
     };
 
     fetchCsrfToken();
-  }, []);
+  }, [apiUrl]);
 
   return (
     <CsrfContext.Provider value={csrfToken}>

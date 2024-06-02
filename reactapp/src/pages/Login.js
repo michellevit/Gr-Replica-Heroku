@@ -2,8 +2,7 @@ import React, { useState, useEffect, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { CsrfContext } from '../contexts/CsrfContext';
 
-const Login = () => {
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
+const Login = ({ setIsLoggedIn, setUserBalance }) => {
   const [showError, setShowError] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
   const [emailAddress, setEmailAddress] = useState('');
@@ -11,59 +10,31 @@ const Login = () => {
   const csrfToken = useContext(CsrfContext); 
   const apiUrl = process.env.REACT_APP_API_URL;
 
-  useEffect(() => {
-    console.log("checking if user logged in")
-    const checkLoggedInStatus = async () => {
-      try {
-        const response = await fetch(`${apiUrl}/api/check_logged_in`);
-        if (response.ok) {
-          const result = await response.json();
-          setIsLoggedIn(result.loggedIn);
-          console.log("LOGGED IN STATUS: ", result.loggedIn)
-        } else {
-          console.error('Error checking logged in status: ', response.statusText);
-          console.log("ERROR: can't tell if user logged in")
-        }
-      } catch (error) {
-        console.error('Error checking logged in status:', error);
-        console.log("ERROR: can't tell if user logged in")
-      }
-    };
-    checkLoggedInStatus();
-  }, []);
-
-  useEffect(() => {
-    console.log("REDIRECT BC LOGGED IN")
-    if (isLoggedIn) {
-      navigate('/home');
-    }
-  }, [isLoggedIn, navigate]);
-
   const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("CSRF TOKEN: ", csrfToken)
     if (!csrfToken) {
       setShowError(true);
       setErrorMessage('CSRF token not found.');
       return;
     }
-    const response = await fetch(`${apiUrl}/api/login'`, {
+    const response = await fetch(`${apiUrl}/api/login`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
         'X-CSRF-Token': csrfToken 
       },
+      credentials: 'include', 
       body: JSON.stringify({
         email: emailAddress,
         password: e.target.password.value
       })
     });
-  
     const data = await response.json();
-  
     if (response.ok) {
       setShowError(false);
       setIsLoggedIn(true);
+      setUserBalance(data.user.balance);
+      navigate('/home');
     } else {
       setShowError(true);
       setErrorMessage(data.error);

@@ -28,5 +28,11 @@ module Api
     end
 
 
+    def logout
+      reset_session
+      render json: { message: 'Logged out successfully' }, status: :ok
+    end    
+    
+
   end
 end

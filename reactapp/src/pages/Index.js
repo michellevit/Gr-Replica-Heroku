@@ -2,61 +2,46 @@ import React, { useState, useEffect, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { CsrfContext } from '../contexts/CsrfContext';
 
-const Index = () => {
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
+const Index = ({ setIsLoggedIn, setUserBalance }) => {
+  const [showError, setShowError] = useState(false);
+  const [errorMessage, setErrorMessage] = useState('');
   const navigate = useNavigate();
   const csrfToken = useContext(CsrfContext);
   const apiUrl = process.env.REACT_APP_API_URL;
-
-  useEffect(() => {
-    const checkLoggedInStatus = async () => {
-      try {
-        const response = await fetch(`${apiUrl}/api/check_logged_in`);
-        if (response.ok) {
-          const result = await response.json();
-          setIsLoggedIn(result.loggedIn);
-        } else {
-          console.error('Error checking logged in status: ', response.statusText);
-        }
-      } catch (error) {
-        console.error('Error checking logged in status:', error);
-      }
-    };
-    checkLoggedInStatus();
-  }, []);
-
-  useEffect(() => {
-    if (isLoggedIn) {
-      navigate('/home');
-    }
-  }, [isLoggedIn, navigate]);
 
   const handleSignup = async (event) => {
     event.preventDefault();
     const formData = {
       email: event.target.email.value,
       password: event.target.password.value,
+      password_confirmation: event.target.password.value,
     };
-  
-    console.log('Form Data:', formData); 
-  
+
     try {
-      const response = await fetch(`${apiUrl}/api/check_logged_in`, {
+      const response = await fetch(`${apiUrl}/api/signup`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
           'X-CSRF-Token': csrfToken, 
         },
+        credentials: 'include',
         body: JSON.stringify(formData),
       });
-  
+
       if (response.ok) {
+        const data = await response.json();
         setIsLoggedIn(true);
+        // setUserBalance(data.user.balance);
+        navigate('/home');
       } else {
         const errorData = await response.json();
+        setShowError(true);
+        setErrorMessage(errorData.error);
         console.error('Signup error:', errorData);
       }
     } catch (error) {
+      setShowError(true);
+      setErrorMessage('An error occurred during signup.');
       console.error('Error during signup:', error);
     }
   };
@@ -79,10 +64,12 @@ const Index = () => {
           <h2>Share and sell your digital content <br />with just a link.</h2>
           <p id="description">Selling stuff has always been a pain. No longer! Get back to creating. <br />We make selling stuff as easy as sharing a link.</p>
         </div>
-        <form id="large-form" onSubmit={handleSignup}>
-          <h3>
-            Sign up for Gumroad <small>Fill in the simple form below and start selling in minutes</small>
-          </h3>
+        <form id="large-form" onSubmit={handleSignup} className='signup'>
+          {showError ? (
+            <h3>Sign up for Gumroad <small className="error">{errorMessage}</small></h3>
+          ) : (
+            <h3>Sign up for Gumroad <small>Fill in the simple form below and start selling in minutes</small></h3>
+          )}
           <input type="text" placeholder="Email Address" name="email" required />
           <input type="password" placeholder="Password" name="password" required />
           <button type="submit">Start selling!</button>

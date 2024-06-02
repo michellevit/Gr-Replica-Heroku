@@ -163,6 +163,11 @@ select {
   font-weight: bold;
   margin-bottom: 10px;
 }
+
+#large-form h3, .signup {
+  display: block;
+}
+
 #large-form h3 small,
 #dashboard h3 small {
   color: #80878d;
@@ -752,10 +757,14 @@ table {
 	border-spacing: 0;
 }
 
+#account-navigation a, #account-navigation button, #account-navigation span {
+  margin: 0 10px;
+}
 
-
-
-
+#account-navigation button {
+  color: #a28ff6;
+  cursor: pointer;
+}
 /**************** tipsy.css **************/
 
 

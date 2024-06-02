@@ -1,7 +1,30 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 
 
 const Home = ({ showError, errorMessage, numberOfDays, showChart, chartMax, chartNumbers, lastSevenDaysPurchaseTotal, lastMonthPurchaseTotal, purchaseTotal }) => {
+  
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const apiUrl = process.env.REACT_APP_API_URL;
+
+  useEffect(() => {
+    const checkLoggedInStatus = async () => {
+      try {
+        const response = await fetch(`${apiUrl}/api/check_logged_in`, {
+          credentials: 'include',
+        });
+        if (response.ok) {
+          const result = await response.json();
+          setIsLoggedIn(result.loggedIn);
+        } else {
+          console.error('Error checking logged in status: ', response.statusText);
+        }
+      } catch (error) {
+        console.error('Error checking logged in status:', error);
+      }
+    };
+    checkLoggedInStatus();
+  }, [apiUrl]);
+  
   return (
     <div>
       <div id="dashboard">
