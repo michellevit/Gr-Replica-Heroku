@@ -1,3 +1,5 @@
+# app/controllers/application_controller
+
 class ApplicationController < ActionController::Base
   
     def react_app

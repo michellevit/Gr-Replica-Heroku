@@ -1,9 +1,12 @@
 import React, { useState, useContext, useEffect } from 'react';
-import { useParams, useHistory } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import { Tooltip } from 'react-tooltip';
 import Modal from 'react-modal';
 import axios from 'axios';
+import './EditLink.css';
 import { UserContext } from '../contexts/UserContext'; // Adjust the path as necessary
+import './EditLink.css'; // Import the CSS file for custom styles
+import ConversionChart from '../components/ConversionChart'; // Adjust the path as necessary
 
 Modal.setAppElement('#root'); // Ensure this matches the root element in your HTML
 
@@ -13,8 +16,9 @@ function popup(url) {
   window.open(url, 'Share on Twitter', 'height=150,width=550');
 }
 
-const Link = ({ editing }) => {
+const EditLink = () => {
   const { permalink } = useParams();
+  const navigate = useNavigate(); // Use useNavigate instead of useHistory
   const { user, setUser } = useContext(UserContext); // Access user context
   const [showError, setShowError] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
@@ -25,11 +29,16 @@ const Link = ({ editing }) => {
     previewUrl: '',
     description: '',
     downloadLimit: 0,
+    views: 0,
+    conversion: 0,
+    numberOfDownloads: 0,
+    totalProfit: 0,
   });
   const [file, setFile] = useState(null);
   const [previewFile, setPreviewFile] = useState(null);
   const [isFileModalOpen, setIsFileModalOpen] = useState(false);
   const [isPreviewModalOpen, setIsPreviewModalOpen] = useState(false);
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
 
   useEffect(() => {
     const checkLoggedIn = async () => {
@@ -46,19 +55,17 @@ const Link = ({ editing }) => {
     };
 
     const fetchLink = async () => {
-      if (editing) {
-        try {
-          const response = await axios.get(`${apiUrl}/api/links/${permalink}`, { withCredentials: true });
-          setFormData(response.data);
-        } catch (error) {
-          console.error('Error fetching link:', error);
-        }
+      try {
+        const response = await axios.get(`${apiUrl}/api/links/${permalink}`, { withCredentials: true });
+        setFormData(response.data);
+      } catch (error) {
+        console.error('Error fetching link:', error);
       }
     };
 
     checkLoggedIn();
     fetchLink();
-  }, [setUser, permalink, editing]);
+  }, [setUser, permalink]);
 
   const handleFileUpload = async (event, field) => {
     const file = event.target.files[0];
@@ -103,8 +110,8 @@ const Link = ({ editing }) => {
       return;
     }
 
-    const method = editing ? 'PUT' : 'POST';
-    const endpoint = editing ? `/api/links/${permalink}` : '/api/links';
+    const method = 'PUT';
+    const endpoint = `/api/links/${permalink}`;
     const url = `${apiUrl}${endpoint}`;
 
     const form = new FormData();
@@ -129,8 +136,8 @@ const Link = ({ editing }) => {
         withCredentials: true // Ensure credentials are sent with the request
       });
 
-      if (response.status === 201 || response.status === 200) {
-        window.location.href = editing ? `/edit/${response.data.unique_permalink}` : `/links`;
+      if (response.status === 200) {
+        navigate(`/edit/${response.data.unique_permalink}`);
       } else {
         setShowError(true);
       }
@@ -140,68 +147,22 @@ const Link = ({ editing }) => {
     }
   };
 
-
-  const postToUrl = (path, params, method) => {
-    method = method || 'post';
-    const form = document.createElement('form');
-    form.setAttribute('method', method);
-    form.setAttribute('action', path);
-
-    for (const key in params) {
-      const hiddenField = document.createElement('input');
-      hiddenField.setAttribute('type', 'hidden');
-      hiddenField.setAttribute('name', key);
-      hiddenField.setAttribute('value', params[key]);
-      form.appendChild(hiddenField);
+  const handleDelete = async () => {
+    try {
+      await axios.delete(`${apiUrl}/api/links/${permalink}`, { withCredentials: true });
+      navigate('/links');
+    } catch (error) {
+      console.error('Delete error:', error);
     }
-    document.body.appendChild(form);
-    form.submit();
   };
 
   return (
     <div>
-      {editing && (
-        <div id="share-box">
-          <button type="button" onClick={() => window.open(`http://www.facebook.com/dialog/feed?app_id=114816261931958&redirect_uri=http://gumroad.com/home&display=popup&message=Buy%20${encodeURIComponent(formData.name)}%20on%20Gumroad!&link=${formData.url}`, 'Share', 'width=400,height=200,scrollbars=yes')} className="facebook button">Share on Facebook</button>
-          <div>
-            <input
-              type="text"
-              value={formData.url}
-              id="link_to_share"
-              readOnly="readonly"
-              title="Share this link to sell!"
-              data-tip="Share this link to sell!"
-            />
-          </div>
-          <button type="button" onClick={() => popup(`http://twitter.com/share?text=Buy%20${encodeURIComponent(formData.name)}%20on%20Gumroad!&via=gumroad&url=${formData.url}`)} className="twitter button">Share on Twitter</button>
 
-          <div id="analytics-box">
-            <p>
-              <strong>{formData.views}</strong> views <span className="arrow">&rarr;</span>{' '}
-              <img
-                src={`https://chart.googleapis.com/chart?chf=bg,s,00000000&cht=p&chd=t:${formData.conversion},${100 - formData.conversion}&chds=0,100&chs=100x100&chco=797874,79787420`}
-                height="20"
-                width="20"
-                alt="Conversion Chart"
-                data-tip={`${formData.conversion}%`}
-              />{' '}
-              <span>{formData.conversion}%</span> <span className="arrow">&rarr;</span>{' '}
-              <strong>{formData.numberOfDownloads}</strong> downloads at ≈ <strong>{formData.price}</strong>{' '}
-              <span className="arrow">&rarr;</span> <strong>{formData.totalProfit}</strong> in profit!
-            </p>
-          </div>
-        </div>
-      )}
 
-      <form id="large-form" onSubmit={handleSubmit} className={editing ? 'editing-link' : ''}>
-        {editing ? (
-          <>
-            <button type="button" id="delete_link">delete this link</button>
-            <h3>Edit link {showError && <small className="error">{errorMessage}</small>}</h3>
-          </>
-        ) : (
-          <h3>Create a new link {showError && <small className="error">{errorMessage}</small>}</h3>
-        )}
+      <form id="large-form" onSubmit={handleSubmit} className='editing-link'>
+        <a href="#" id="delete_link" onClick={(e) => { e.preventDefault(); setIsDeleteModalOpen(true); }}>delete this link</a>
+        <h3>Edit link {showError && <small className="error">{errorMessage}</small>}</h3>
 
         <p>
           <label htmlFor="name">Name:</label>
@@ -235,24 +196,36 @@ const Link = ({ editing }) => {
           <Tooltip />
         </p>
 
-        <p><button type="submit">{editing ? 'Save changes' : 'Add link'}</button></p>
+        <p><button type="submit">Save changes</button></p>
 
-        {editing && (
-          <>
-            <div className="mini-rule"></div>
-            <div id="link-options">
-              <h4>Additional link options:</h4>
-              <p>
-                <label htmlFor="download_limit">Download limit:</label>
-                <input id="download_limit" name="download_limit" type="text" placeholder="0" value={formData.downloadLimit} onChange={handleChange} />
-                <Tooltip />
-              </p>
-            </div>
-          </>
-        )}
+        <div className="mini-rule"></div>
+        <div id="link-options">
+          <h4>Additional link options:</h4>
+          <p>
+            <label htmlFor="download_limit">Download limit:</label>
+            <input id="download_limit" name="download_limit" type="text" placeholder="0" value={formData.downloadLimit} onChange={handleChange} />
+            <Tooltip />
+          </p>
+        </div>
+
 
         <div className="rainbow bar"></div>
       </form>
+
+      <div id="share-box">
+        <button type="button" onClick={() => window.open(`http://www.facebook.com/dialog/feed?app_id=114816261931958&redirect_uri=http://gumroad.com/home&display=popup&message=Buy%20${encodeURIComponent(formData.name)}%20on%20Gumroad!&link=${formData.url}`, 'Share', 'width=400,height=200,scrollbars=yes')} className="facebook button">Share on Facebook</button>
+        {/* <div>
+          <input
+            type="text"
+            value={formData.url}
+            id="link_to_share"
+            readOnly="readonly"
+            title="Share this link to sell!"
+            data-tip="Share this link to sell!"
+          />
+        </div> */}
+        <button type="button" onClick={() => popup(`http://twitter.com/share?text=Buy%20${encodeURIComponent(formData.name)}%20on%20Gumroad!&via=gumroad&url=${formData.url}`)} className="twitter button">Share on Twitter</button>       
+      </div>
 
       <Modal
         isOpen={isFileModalOpen}
@@ -278,9 +251,23 @@ const Link = ({ editing }) => {
         <button onClick={() => setIsPreviewModalOpen(false)}>Cancel</button>
       </Modal>
 
+      <Modal
+        isOpen={isDeleteModalOpen}
+        onRequestClose={() => setIsDeleteModalOpen(false)}
+        contentLabel="Confirm Delete"
+        className="delete-modal"
+        overlayClassName="delete-overlay"
+      >
+        <h2>Are you sure you want to delete this link?</h2>
+        <div className='delete-modal-buttons'>
+        <button onClick={() => { setIsDeleteModalOpen(false); handleDelete(); }}>Yes</button>
+        <button onClick={() => setIsDeleteModalOpen(false)}>No</button>
+        </div>
+      </Modal>
+
       <p id="below-form-p">&nbsp;</p>
     </div>
   );
 };
 
-export default Link;
+export default EditLink;

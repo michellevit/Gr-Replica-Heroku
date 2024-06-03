@@ -11,13 +11,13 @@ export const UserProvider = ({ children }) => {
     const fetchUser = async () => {
       try {
         const response = await fetch(`${apiUrl}/api/check_logged_in`, {
-          credentials: 'include',
+          credentials: 'include', // Include credentials to maintain the session
         });
         if (response.ok) {
           const result = await response.json();
-          setUser(result.user); 
+          setUser(result.user);
         } else {
-          console.error('Error fetching user data: ', response.statusText);
+          console.error('Error fetching user data:', response.statusText);
         }
       } catch (error) {
         console.error('Error fetching user data:', error);

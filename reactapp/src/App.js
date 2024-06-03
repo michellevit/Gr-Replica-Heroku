@@ -8,6 +8,7 @@ import Home from "./pages/Home";
 import Index from "./pages/Index";
 import About from "./pages/About";
 import Link from "./pages/Link";
+import EditLink from "./pages/EditLink";
 import Login from "./pages/Login";
 import ForgotPassword from "./pages/ForgotPassword";
 import ResetPassword from "./pages/ResetPassword";
@@ -25,7 +26,6 @@ import { UserContext } from "./contexts/UserContext";
 function App() {
   const { user, setUser } = useContext(UserContext);
   const navigate = useNavigate();
-
 
   const handleLogout = async () => {
     const apiUrl = process.env.REACT_APP_API_URL;
@@ -73,7 +73,7 @@ function App() {
             <Route path="/faq" element={<FAQ />} />
             <Route path="/add" element={<Link />} />
             <Route path="/visiting-link" element={<VisitingLink />} />
-            <Route path="/edit-link/:id" element={<Link editing />} />
+            <Route path="/edit/:permalink" element={<EditLink />} />
             <Route path="/links" element={<Links />} />
             <Route path="/l/:permalink" element={<WrappedVisitingLink />} />
             <Route path="*" element={<NotFound />} />

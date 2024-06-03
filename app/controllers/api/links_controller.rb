@@ -1,20 +1,23 @@
+# app/controllers/api/links_controller.rb
+
 module Api
   class LinksController < BaseController
     skip_before_action :verify_authenticity_token
     before_action :set_link, only: [:show, :update, :destroy, :process_payment]
+    before_action :authenticate_user!, only: [:create, :update, :destroy]
 
     def index
       @links = Link.all
-      render json: @links
+      render json: @links.as_json(methods: :formatted_price)
     end
 
     def show
-      render json: @link
+      render json: @link.as_json(methods: :formatted_price)
+      Rails.logger.info("Link: }")
     end
 
     def create
-      @link = Link.new(link_params)
-      Rails.logger.info("Link params: #{link_params.inspect}")
+      @link = current_user.links.new(link_params.merge(owner: current_user.email)) 
       if @link.save
         handle_file_upload(params[:file], @link) if params[:file].present?
         handle_preview_file_upload(params[:preview_file], @link) if params[:preview_file].present?
@@ -36,10 +39,13 @@ module Api
     end
 
     def destroy
-      @link.destroy
-      head :no_content
+      if @link.destroy
+        head :no_content
+      else
+        render json: @link.errors, status: :unprocessable_entity
+      end
     end
-
+    
     def process_payment
       # Implement Stripe payment processing here
     end
@@ -51,17 +57,15 @@ module Api
     end
 
     def link_params
-      params.require(:link).permit(:name, :price, :url, :preview_url, :description, :download_limit, :user_id)
+      params.require(:link).permit(:name, :price, :url, :preview_url, :description, :download_limit)
     end
 
     def handle_file_upload(file, link)
       link.file.attach(file)
-      link.update(url: Rails.application.routes.url_helpers.rails_blob_url(link.file, only_path: true))
     end
-    
+
     def handle_preview_file_upload(file, link)
       link.preview_file.attach(file)
-      link.update(preview_url: Rails.application.routes.url_helpers.rails_blob_url(link.preview_file, only_path: true))
     end
   end
 end

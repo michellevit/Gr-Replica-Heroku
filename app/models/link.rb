@@ -16,4 +16,9 @@ class Link < ApplicationRecord
       break unless self.class.exists?(unique_permalink: unique_permalink)
     end
   end
+
+  def formatted_price
+    sprintf('%.2f', price)
+  end
+
 end

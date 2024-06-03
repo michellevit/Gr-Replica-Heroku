@@ -3,12 +3,8 @@ Rails.application.routes.draw do
   get "up" => "rails/health#show", as: :rails_health_check
 
   namespace :api do
-    resources :links do
-      member do
-        post 'process_payment'
-      end
-    end
-
+    resources :links
+    post 'upload', to: 'file_uploads#create'
     post 'signup', to: 'users#create'
     post 'login', to: 'sessions#create'
     get 'check_logged_in', to: 'sessions#check_logged_in'
@@ -17,6 +13,7 @@ Rails.application.routes.draw do
     delete 'logout', to: 'sessions#logout'
     put 'update_user', to: 'users#update'
   end
+
 
   get '*path', to: 'application#react_app'
 end
