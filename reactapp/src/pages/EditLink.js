@@ -39,6 +39,7 @@ const EditLink = () => {
   const [isFileModalOpen, setIsFileModalOpen] = useState(false);
   const [isPreviewModalOpen, setIsPreviewModalOpen] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [productLink, setProductLink] = useState(''); 
 
   useEffect(() => {
     const checkLoggedIn = async () => {
@@ -58,6 +59,7 @@ const EditLink = () => {
       try {
         const response = await axios.get(`${apiUrl}/api/links/${permalink}`, { withCredentials: true });
         setFormData(response.data);
+        setProductLink(`${window.location.origin}/product/${response.data.unique_permalink}`); // Set product link
       } catch (error) {
         console.error('Error fetching link:', error);
       }
@@ -137,6 +139,7 @@ const EditLink = () => {
       });
 
       if (response.status === 200) {
+        setProductLink(`${window.location.origin}/product/${response.data.unique_permalink}`);
         navigate(`/edit/${response.data.unique_permalink}`);
       } else {
         setShowError(true);
@@ -158,8 +161,6 @@ const EditLink = () => {
 
   return (
     <div>
-
-
       <form id="large-form" onSubmit={handleSubmit} className='editing-link'>
         <a href="#" id="delete_link" onClick={(e) => { e.preventDefault(); setIsDeleteModalOpen(true); }}>delete this link</a>
         <h3>Edit link {showError && <small className="error">{errorMessage}</small>}</h3>
@@ -208,23 +209,18 @@ const EditLink = () => {
           </p>
         </div>
 
-
         <div className="rainbow bar"></div>
       </form>
 
       <div id="share-box">
-        <button type="button" onClick={() => window.open(`http://www.facebook.com/dialog/feed?app_id=114816261931958&redirect_uri=http://gumroad.com/home&display=popup&message=Buy%20${encodeURIComponent(formData.name)}%20on%20Gumroad!&link=${formData.url}`, 'Share', 'width=400,height=200,scrollbars=yes')} className="facebook button">Share on Facebook</button>
-        {/* <div>
-          <input
-            type="text"
-            value={formData.url}
-            id="link_to_share"
-            readOnly="readonly"
-            title="Share this link to sell!"
-            data-tip="Share this link to sell!"
-          />
-        </div> */}
-        <button type="button" onClick={() => popup(`http://twitter.com/share?text=Buy%20${encodeURIComponent(formData.name)}%20on%20Gumroad!&via=gumroad&url=${formData.url}`)} className="twitter button">Share on Twitter</button>       
+        {productLink && (
+          <div className="generated-link">
+            <h3>Share this link with your customers:</h3>
+            <a href={productLink} target="_blank" rel="noopener noreferrer">{productLink}</a>
+          </div>
+        )}
+        <button type="button" onClick={() => window.open(`http://www.facebook.com/dialog/feed?app_id=114816261931958&redirect_uri=http://gumroad.com/home&display=popup&message=Buy%20${encodeURIComponent(formData.name)}%20on%20Gumroad!&link=${productLink}`, 'Share', 'width=400,height=200,scrollbars=yes')} className="facebook button">Share on Facebook</button>
+        <button type="button" onClick={() => popup(`http://twitter.com/share?text=Buy%20${encodeURIComponent(formData.name)}%20on%20Gumroad!&via=gumroad&url=${productLink}`)} className="twitter button">Share on Twitter</button>
       </div>
 
       <Modal
@@ -260,8 +256,8 @@ const EditLink = () => {
       >
         <h2>Are you sure you want to delete this link?</h2>
         <div className='delete-modal-buttons'>
-        <button onClick={() => { setIsDeleteModalOpen(false); handleDelete(); }}>Yes</button>
-        <button onClick={() => setIsDeleteModalOpen(false)}>No</button>
+          <button onClick={() => { setIsDeleteModalOpen(false); handleDelete(); }}>Yes</button>
+          <button onClick={() => setIsDeleteModalOpen(false)}>No</button>
         </div>
       </Modal>
 

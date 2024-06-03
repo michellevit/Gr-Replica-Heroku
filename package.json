@@ -8,6 +8,8 @@
         "node": "14.x"
     },
     "dependencies": {
+        "@stripe/react-stripe-js": "^2.7.1",
+        "@stripe/stripe-js": "^3.4.1",
         "react-helmet": "^6.1.0"
     }
 }

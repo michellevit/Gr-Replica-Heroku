@@ -64,7 +64,7 @@ const Link = ({ editing }) => {
     const file = event.target.files[0];
     const formData = new FormData();
     formData.append('file', file);
-
+  
     try {
       const response = await axios.post(`${apiUrl}/api/upload`, formData, {
         headers: {

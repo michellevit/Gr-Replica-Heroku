@@ -1,6 +1,4 @@
-# app/controllers/api/fil_uploads_controller.rb
-
-
+# app/controllers/api/file_uploads_controller.rb
 class Api::FileUploadsController < BaseController
   skip_before_action :verify_authenticity_token
 

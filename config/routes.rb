@@ -1,9 +1,16 @@
+# config/routes.rb
 Rails.application.routes.draw do
   root 'application#react_app'
   get "up" => "rails/health#show", as: :rails_health_check
 
   namespace :api do
-    resources :links
+    resources :links, only: [:index, :show, :create, :update, :destroy] do
+      member do
+        get 'details'
+        post 'purchase'
+      end
+    end
+    
     post 'upload', to: 'file_uploads#create'
     post 'signup', to: 'users#create'
     post 'login', to: 'sessions#create'
@@ -13,7 +20,6 @@ Rails.application.routes.draw do
     delete 'logout', to: 'sessions#logout'
     put 'update_user', to: 'users#update'
   end
-
 
   get '*path', to: 'application#react_app'
 end

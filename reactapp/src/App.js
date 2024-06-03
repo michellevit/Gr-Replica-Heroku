@@ -9,12 +9,14 @@ import Index from "./pages/Index";
 import About from "./pages/About";
 import Link from "./pages/Link";
 import EditLink from "./pages/EditLink";
+import Links from "./pages/Links";
+import Success from "./pages/Success";
+import VisitingLink from "./pages/VisitingLink";
+import Product from './pages/Product';
 import Login from "./pages/Login";
 import ForgotPassword from "./pages/ForgotPassword";
 import ResetPassword from "./pages/ResetPassword";
 import Settings from "./pages/Settings";
-import Links from "./pages/Links";
-import VisitingLink from "./pages/VisitingLink";
 import WrappedVisitingLink from './pages/WrappedVisitingLink';
 import Stats from "./pages/Stats";
 import Elsewhere from "./pages/Elsewhere";
@@ -74,8 +76,10 @@ function App() {
             <Route path="/add" element={<Link />} />
             <Route path="/visiting-link" element={<VisitingLink />} />
             <Route path="/edit/:permalink" element={<EditLink />} />
+            <Route path="/product/:permalink" element={<Product />} />
             <Route path="/links" element={<Links />} />
             <Route path="/l/:permalink" element={<WrappedVisitingLink />} />
+            <Route path="/success" component={Success} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </div>

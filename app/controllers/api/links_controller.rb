@@ -1,9 +1,11 @@
 # app/controllers/api/links_controller.rb
 
+require 'stripe'
+
 module Api
   class LinksController < BaseController
     skip_before_action :verify_authenticity_token
-    before_action :set_link, only: [:show, :update, :destroy, :process_payment]
+    before_action :set_link, only: [:show, :update, :destroy, :details, :purchase]
     before_action :authenticate_user!, only: [:create, :update, :destroy]
 
     def index
@@ -13,25 +15,21 @@ module Api
 
     def show
       render json: @link.as_json(methods: :formatted_price)
-      Rails.logger.info("Link: }")
     end
 
     def create
-      @link = current_user.links.new(link_params.merge(owner: current_user.email)) 
+      @link = current_user.links.new(link_params.merge(owner: current_user.email))
       if @link.save
-        handle_file_upload(params[:file], @link) if params[:file].present?
-        handle_preview_file_upload(params[:preview_file], @link) if params[:preview_file].present?
+        attach_files_to_link(@link)
         render json: @link, status: :created
       else
-        Rails.logger.error("Link creation failed: #{@link.errors.full_messages.join(', ')}")
         render json: @link.errors, status: :unprocessable_entity
       end
     end
 
     def update
       if @link.update(link_params)
-        handle_file_upload(params[:file], @link) if params[:file].present?
-        handle_preview_file_upload(params[:preview_file], @link) if params[:preview_file].present?
+        attach_files_to_link(@link)
         render json: @link
       else
         render json: @link.errors, status: :unprocessable_entity
@@ -39,15 +37,47 @@ module Api
     end
 
     def destroy
-      if @link.destroy
-        head :no_content
-      else
-        render json: @link.errors, status: :unprocessable_entity
-      end
+      @link.destroy
+      head :no_content
     end
-    
-    def process_payment
-      # Implement Stripe payment processing here
+
+    def details
+      logger.info "Fetching details for link with permalink: #{params[:id]}"
+      render json: @link.as_json(methods: :formatted_price)
+    end
+
+    def purchase
+      begin
+        # Create a Stripe customer
+        customer = Stripe::Customer.create(
+          email: params[:stripeEmail],
+          payment_method: params[:stripeToken]
+        )
+
+        # Create a PaymentIntent
+        intent = Stripe::PaymentIntent.create(
+          customer: customer.id,
+          amount: (@link.price * 100).to_i,
+          description: @link.name,
+          currency: 'usd',
+          payment_method: params[:stripeToken],
+          confirm: true,
+          return_url: "#{request.base_url}/success"
+        )
+
+        # Save the purchase record
+        Purchase.create!(
+          owner: @link.owner,
+          unique_permalink: @link.unique_permalink,
+          price: @link.price
+        )
+
+        render json: { success: true, redirect_url: intent.next_action.redirect_to_url.url }
+      rescue Stripe::CardError => e
+        render json: { success: false, error_message: e.message }
+      rescue Stripe::InvalidRequestError => e
+        render json: { success: false, error_message: e.message }
+      end
     end
 
     private
@@ -60,12 +90,9 @@ module Api
       params.require(:link).permit(:name, :price, :url, :preview_url, :description, :download_limit)
     end
 
-    def handle_file_upload(file, link)
-      link.file.attach(file)
-    end
-
-    def handle_preview_file_upload(file, link)
-      link.preview_file.attach(file)
+    def attach_files_to_link(link)
+      link.file.attach(params[:file]) if params[:file].present?
+      link.preview_file.attach(params[:preview_file]) if params[:preview_file].present?
     end
   end
 end
