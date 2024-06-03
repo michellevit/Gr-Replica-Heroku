@@ -9,6 +9,9 @@ Rails.application.routes.draw do
         get 'details'
         post 'purchase'
       end
+      collection do
+        get 'homechart'
+      end
     end
     
     post 'upload', to: 'file_uploads#create'

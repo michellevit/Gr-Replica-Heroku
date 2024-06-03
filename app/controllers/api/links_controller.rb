@@ -43,8 +43,9 @@ module Api
 
     def details
       logger.info "Fetching details for link with permalink: #{params[:id]}"
-      render json: @link.as_json(methods: :formatted_price)
+      render json: @link.as_json(methods: :formatted_price, include_purchase_date: true)
     end
+    
 
     def purchase
       begin
@@ -66,7 +67,13 @@ module Api
         )
     
         @link.increment!(:number_of_downloads)
-    
+        
+        user = User.find_by(email: @link.owner)
+
+        if user
+          user.increment!(:balance, @link.price)
+        end
+
         if intent.next_action
           redirect_url = intent.next_action.redirect_to_url.url
         else
@@ -82,8 +89,15 @@ module Api
       end
     end
     
+    def homechart
+      if current_user
+        @links = current_user.links.select(:name, :number_of_downloads)
+        render json: @links
+      else
+        render json: { error: "Not Authorized" }, status: :unauthorized
+      end
+    end
     
-
     private
 
     def set_link

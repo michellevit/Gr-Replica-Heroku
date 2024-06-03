@@ -21,4 +21,9 @@ class Link < ApplicationRecord
     sprintf('%.2f', price)
   end
 
+    
+  def purchases_by_date
+    purchases.group_by { |purchase| purchase.created_at.to_date }
+  end
+
 end
