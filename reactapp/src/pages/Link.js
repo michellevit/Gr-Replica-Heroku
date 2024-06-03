@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import { Tooltip } from 'react-tooltip';
 import Modal from 'react-modal';
 import axios from 'axios';
+import { UserContext } from '../contexts/UserContext'; // Adjust the path as necessary
 
 Modal.setAppElement('#root'); // Ensure this matches the root element in your HTML
 
@@ -12,6 +13,7 @@ function popup(url) {
 }
 
 const Link = ({ editing, permalink, uploadUrl, errorMessage, name, price, url, previewUrl, description, downloadLimit, views, conversion, numberOfDownloads, totalProfit }) => {
+  const { user } = useContext(UserContext); // Access user context
   const [showError, setShowError] = useState(false);
   const [formData, setFormData] = useState({
     name: name || '',
@@ -41,10 +43,16 @@ const Link = ({ editing, permalink, uploadUrl, errorMessage, name, price, url, p
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (!user) {
+      setShowError(true);
+      console.error('User is not logged in');
+      return;
+    }
+
     const method = editing ? 'PUT' : 'POST';
     const endpoint = editing ? `/api/links/${permalink}` : '/api/links';
     const url = `${apiUrl}${endpoint}`;
-    
+
     const form = new FormData();
     form.append('link[name]', formData.name);
     form.append('link[price]', formData.price);
@@ -52,16 +60,19 @@ const Link = ({ editing, permalink, uploadUrl, errorMessage, name, price, url, p
     form.append('link[preview_url]', formData.previewUrl);
     form.append('link[description]', formData.description);
     form.append('link[download_limit]', formData.downloadLimit);
-    
+    form.append('link[user_id]', user.id); // Add user_id to form data
+
     if (file) form.append('file', file);
     if (previewFile) form.append('preview_file', previewFile);
-    
+
     try {
       const response = await axios({
         method: method,
         url: url,
         data: form,
-        headers: { 'Content-Type': 'multipart/form-data' }
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        }
       });
 
       if (response.status === 201 || response.status === 200) {
