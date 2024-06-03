@@ -4,7 +4,6 @@ import Chart from "chart.js/auto";
 
 const apiUrl = process.env.REACT_APP_API_URL;
 
-
 const Home = (
   showError,
   errorMessage,
@@ -19,12 +18,13 @@ const Home = (
   const { user } = useContext(UserContext);
   const chartRef = useRef(null);
   const [hasData, setHasData] = useState(true);
+  const [chartInstance, setChartInstance] = useState(false);
 
   useEffect(() => {
     if (user) {
       fetchAllLinksData();
     }
-  }, [user]); // Dependency on user ensures data is fetched when user logs in
+  }, [user]); 
 
   const fetchAllLinksData = async () => {
     try {
@@ -33,7 +33,7 @@ const Home = (
         headers: {
           "Content-Type": "application/json",
         },
-        credentials: 'include'  // Ensuring cookies are sent with the request
+        credentials: "include",
       });
       if (response.ok) {
         const links = await response.json();
@@ -52,29 +52,35 @@ const Home = (
   };
 
   const renderChart = (links) => {
+    if (chartInstance) {
+      chartInstance.destroy();
+      setChartInstance(false);
+    }
     const ctx = chartRef.current.getContext("2d");
     if (ctx && links.length > 0) {
       const chart = new Chart(ctx, {
         type: "bar",
         data: {
-          labels: links.map(link => link.name),
-          datasets: [{
-            label: "Number of Downloads",
-            data: links.map(link => link.number_of_downloads),
-            backgroundColor: "rgba(204, 51, 63, 0.7)",
-            borderColor: "rgba(235, 104, 65, 0.8)",
-            borderWidth: 1
-          }]
+          labels: links.map((link) => link.name),
+          datasets: [
+            {
+              label: "Number of Downloads",
+              data: links.map((link) => link.number_of_downloads),
+              backgroundColor: "rgba(204, 51, 63, 0.7)",
+              borderColor: "rgba(235, 104, 65, 0.8)",
+              borderWidth: 1,
+            },
+          ],
         },
         options: {
           scales: {
             y: {
-              beginAtZero: true
-            }
-          }
-        }
+              beginAtZero: true,
+            },
+          },
+        },
       });
-      return chart; 
+      return chart;
     } else {
       console.error("No chart context available or no links data.");
     }
@@ -85,28 +91,28 @@ const Home = (
       <div id="dashboard">
         <h3>Welcome {user?.name}</h3>
         <div className="chart">
-        {hasData ? (
-          <canvas ref={chartRef} width="640" height="225"></canvas>
-        ) : (
-          <p>Wait a few days and a chart will show up here!</p>
-        )}
+          {hasData ? (
+            <canvas ref={chartRef} width="640" height="225"></canvas>
+          ) : (
+            <p>Wait a few days and a chart will show up here!</p>
+          )}
         </div>
         <div className="mini-rule"></div>
 
-      <div id="history">
-        <h4>History:</h4>
-        <p>
-          <strong>${lastSevenDaysPurchaseTotal}</strong> in the past 7 days.
-        </p>
-        <p>
-          <strong>${lastMonthPurchaseTotal}</strong> in the past month.
-        </p>
-        <p>
-          <strong>${purchaseTotal}</strong> in total.
-        </p>
+        <div id="history">
+          <h4>History:</h4>
+          <p>
+            <strong>${lastSevenDaysPurchaseTotal}</strong> in the past 7 days.
+          </p>
+          <p>
+            <strong>${lastMonthPurchaseTotal}</strong> in the past month.
+          </p>
+          <p>
+            <strong>${purchaseTotal}</strong> in total.
+          </p>
 
-        <div className="rainbow bar" id="loading-bar"></div>
-      </div>
+          <div className="rainbow bar" id="loading-bar"></div>
+        </div>
 
         <div className="rainbow bar" id="loading-bar"></div>
       </div>

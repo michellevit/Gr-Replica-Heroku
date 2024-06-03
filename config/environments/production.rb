@@ -82,7 +82,9 @@ Rails.application.configure do
     user_name:            ENV['EMAIL_USER'],
     password:             ENV['EMAIL_PASS'],
     authentication:       'plain',
-    enable_starttls_auto: true
+    enable_starttls_auto: true,
+    open_timeout: 30,
+    read_timeout: 30,
   }
   config.action_mailer.default_url_options = { host: 'michellef.dev' }
 
