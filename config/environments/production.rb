@@ -78,7 +78,7 @@ Rails.application.configure do
   config.action_mailer.smtp_settings = {
     address:              ENV['EMAIL_HOST'],
     port:                 ENV['EMAIL_PORT'],
-    domain:               'gr-replica.michellef.dev',
+    domain:               'michellef.dev',
     user_name:            ENV['EMAIL_USER'],
     password:             ENV['EMAIL_PASS'],
     authentication:       'plain',
