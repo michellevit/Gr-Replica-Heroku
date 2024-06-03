@@ -9,6 +9,7 @@ const ForgotPassword = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    console.log("URL: ", `${apiUrl}/api/forgot_password`)
     try {
       const response = await fetch(`${apiUrl}/api/forgot_password`, {
         method: 'POST',

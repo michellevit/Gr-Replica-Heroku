@@ -57,6 +57,7 @@ function App() {
         <Header 
           onLinksPage={false} 
           handleLogout={handleLogout}
+          key={user ? 'logged-in' : 'logged-out'}
         />
         <div className="container">
           <Routes>
