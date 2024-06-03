@@ -20,6 +20,7 @@ const ForgotPassword = () => {
         body: JSON.stringify({ email: emailAddress }),
       });
       const data = await response.json();
+      console.log('RESPONSE: ', data);
       if (response.ok) {
         setSuccessMessage(data.message || 'A reset password link has been sent to your email.');
         setShowError(false);
