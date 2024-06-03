@@ -53,7 +53,7 @@ module Api
           email: params[:stripeEmail],
           payment_method: params[:stripeToken]
         )
-
+    
         # Create a PaymentIntent
         intent = Stripe::PaymentIntent.create(
           customer: customer.id,
@@ -64,21 +64,25 @@ module Api
           confirm: true,
           return_url: "#{request.base_url}/success"
         )
-
-        # Save the purchase record
-        Purchase.create!(
-          owner: @link.owner,
-          unique_permalink: @link.unique_permalink,
-          price: @link.price
-        )
-
-        render json: { success: true, redirect_url: intent.next_action.redirect_to_url.url }
+    
+        @link.increment!(:number_of_downloads)
+    
+        if intent.next_action
+          redirect_url = intent.next_action.redirect_to_url.url
+        else
+          product_url = Rails.application.routes.url_helpers.rails_blob_url(@link.file, host: request.base_url)
+          redirect_url = "#{request.base_url}/success?product_url=#{CGI.escape(product_url)}"
+        end
+    
+        render json: { success: true, redirect_url: redirect_url }
       rescue Stripe::CardError => e
         render json: { success: false, error_message: e.message }
       rescue Stripe::InvalidRequestError => e
         render json: { success: false, error_message: e.message }
       end
     end
+    
+    
 
     private
 

@@ -79,7 +79,7 @@ function App() {
             <Route path="/product/:permalink" element={<Product />} />
             <Route path="/links" element={<Links />} />
             <Route path="/l/:permalink" element={<WrappedVisitingLink />} />
-            <Route path="/success" component={Success} />
+            <Route path="/success" element={<Success />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </div>

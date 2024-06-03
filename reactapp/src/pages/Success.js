@@ -11,7 +11,11 @@ const Success = () => {
   return (
     <div>
       <h1>Payment Successful!</h1>
-      <p>Thank you for your purchase. You can download your product <a href={productUrl}>here</a>.</p>
+      {productUrl ? (
+        <p>Thank you for your purchase. You can download your product <a href={productUrl} target="_blank" rel="noopener noreferrer">here</a>.</p>
+      ) : (
+        <p>No product URL provided.</p>
+      )}
     </div>
   );
 };

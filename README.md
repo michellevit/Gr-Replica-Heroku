@@ -1,12 +1,10 @@
-# Boilerplate Code for Rails-React-PostgreSQL-Heroku App
+# Gumroad Replica Project
 
 ![Ruby Version](https://img.shields.io/badge/Ruby-3.2.3-cc0000.svg)
 ![Rails Version](https://img.shields.io/badge/Rails-7.1.3-cc0000.svg)
 ![React Version](https://img.shields.io/badge/React-18.2.0-61dafb.svg)
 ![PostgreSQL](https://img.shields.io/badge/Database-PostgreSQL-336791.svg)
 ![Heroku](https://img.shields.io/badge/Platform-Heroku-6762a6.svg)
-
-Boilerplate code for setting up a Rails-React-PostgreSQL application on Heroku.
 
 
 ## Table of Contents

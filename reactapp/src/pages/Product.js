@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import { loadStripe } from "@stripe/stripe-js";
 import { Elements, CardElement, useStripe, useElements } from "@stripe/react-stripe-js";
 import axios from "axios";
@@ -39,12 +39,6 @@ const Product = () => {
   return (
     <div id="link-content">
       <div id="header">
-        <a href="/">
-          <h1 id="logo">Gumroad</h1>
-        </a>
-      </div>
-
-      {product.description && (
         <div id="description-box">
           <h3>{product.name}</h3>
           <p>{product.description}</p>
@@ -58,7 +52,7 @@ const Product = () => {
             </div>
           )}
         </div>
-      )}
+      </div>
 
       <Elements stripe={stripePromise}>
         <CheckoutForm product={product} />
@@ -72,6 +66,7 @@ const Product = () => {
 const CheckoutForm = ({ product }) => {
   const stripe = useStripe();
   const elements = useElements();
+  const navigate = useNavigate();
   const [error, setError] = useState("");
   const [processing, setProcessing] = useState(false);
 
@@ -103,7 +98,7 @@ const CheckoutForm = ({ product }) => {
       );
 
       if (response.data.success) {
-        window.location.href = response.data.redirect_url;
+        navigate(`/success?product_url=${encodeURIComponent(product.url)}`);
       } else {
         setError(response.data.error_message);
       }

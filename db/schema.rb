@@ -78,15 +78,6 @@ ActiveRecord::Schema[7.1].define(version: 2024_06_03_055535) do
     t.datetime "updated_at", null: false
   end
 
-  create_table "purchases", force: :cascade do |t|
-    t.string "owner", null: false
-    t.string "unique_permalink", null: false
-    t.float "price", null: false
-    t.datetime "create_date", default: -> { "CURRENT_TIMESTAMP" }
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-  end
-
   create_table "users", force: :cascade do |t|
     t.string "email", null: false
     t.string "payment_address"
