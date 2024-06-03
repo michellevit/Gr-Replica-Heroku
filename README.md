@@ -12,6 +12,7 @@
 - [How To Set Up Project](#how-to-set-up-project) 
 - [How To Set Up Database](#how-to-set-up-db) 
 - [Useful Heroku Commands](#heroku-commands)
+- [To Do](#to-do)
 
 
 ## Prerequisites<a name="prerequisites"></a>
@@ -163,3 +164,11 @@
 - Migrate DB changes: `heroku run rails db:migrate -a gr-replica`
 - Run the rails console: `heroku run rails console -a gr-replica`
 - Seed the db: `heroku run rails db:seed -a gr-replica`
+
+
+## To Do <a name="to-do"></a>
+- Improve Header link reactivity to logged in status
+- Forgot password feature not working
+- Improve chart feature
+- Add flowchart for Edit product page
+- Condense Edit + Link page
