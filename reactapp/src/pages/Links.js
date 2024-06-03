@@ -37,8 +37,9 @@ const Links = () => {
       <div id="dashboard" className="links-page">
         <h3>
           {numberOfLinks} link{numberOfLinks !== 1 ? 's' : ''} <small>{linksMessage}</small>
+          <a href="/add" className="button" id="add-link-button">Add link</a>
         </h3>
-        <a href="/add" className="button" id="add-link-button">Add link</a>
+        
         {numberOfLinks > 0 && (
           <>
             <div className="mini-rule"></div>
