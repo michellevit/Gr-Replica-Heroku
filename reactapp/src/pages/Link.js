@@ -5,6 +5,8 @@ import axios from 'axios';
 
 Modal.setAppElement('#root'); // Ensure this matches the root element in your HTML
 
+const apiUrl = process.env.REACT_APP_API_URL;
+
 function popup(url) {
   window.open(url, 'Share on Twitter', 'height=150,width=550');
 }
@@ -40,7 +42,8 @@ const Link = ({ editing, permalink, uploadUrl, errorMessage, name, price, url, p
   const handleSubmit = async (e) => {
     e.preventDefault();
     const method = editing ? 'PUT' : 'POST';
-    const url = editing ? `/api/links/${permalink}` : '/api/links';
+    const endpoint = editing ? `/api/links/${permalink}` : '/api/links';
+    const url = `${apiUrl}${endpoint}`;
     
     const form = new FormData();
     form.append('link[name]', formData.name);
