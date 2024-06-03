@@ -4,14 +4,14 @@
 module Api
   class PasswordsController < BaseController
     protect_from_forgery with: :null_session
-
+    Rails.logger.info "YOU'RE IN!!!!!!!!!!!!!!!"
     def forgot
       if params[:email].blank?
         return render json: { error: 'Email not present' }, status: :unprocessable_entity
       end
     
       user = User.find_by(email: params[:email].downcase)
-    
+      
       if user.present?
         user.generate_password_token!
         UserMailer.forgot_password(user).deliver_now

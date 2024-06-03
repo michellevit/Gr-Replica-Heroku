@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useRef } from "react";
+import React, { useContext, useEffect, useState, useRef } from "react";
 import { UserContext } from "../contexts/UserContext";
 import Chart from "chart.js/auto";
 
@@ -18,6 +18,7 @@ const Home = (
 ) => {
   const { user } = useContext(UserContext);
   const chartRef = useRef(null);
+  const [hasData, setHasData] = useState(true);
 
   useEffect(() => {
     if (user) {
@@ -36,7 +37,12 @@ const Home = (
       });
       if (response.ok) {
         const links = await response.json();
-        renderChart(links);
+        if (links.length > 0) {
+          renderChart(links);
+          setHasData(true);
+        } else {
+          setHasData(false);
+        }
       } else {
         console.error("Failed to fetch link data:", response.statusText);
       }
@@ -79,7 +85,11 @@ const Home = (
       <div id="dashboard">
         <h3>Welcome {user?.name}</h3>
         <div className="chart">
+        {hasData ? (
           <canvas ref={chartRef} width="640" height="225"></canvas>
+        ) : (
+          <p>Wait a few days and a chart will show up here!</p>
+        )}
         </div>
         <div className="mini-rule"></div>
 
