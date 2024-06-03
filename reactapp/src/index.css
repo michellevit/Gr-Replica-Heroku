@@ -123,7 +123,7 @@ input:-moz-placeholder {
 }
 
 textarea {
-  width: 320px;
+  width: 330px;
   min-height: 100px;
 }
 
@@ -445,6 +445,7 @@ h1#logo {
   color: #454545;
   font-size: 16px;
   line-height: 24px;
+  width: 330px;
 }
 
 #intro ul {
@@ -706,6 +707,33 @@ h1#logo {
 
 .qq-upload-failed-text {display:none;}
 .qq-upload-fail .qq-upload-failed-text {display:inline;}
+
+.upload-container {
+  display: flex;
+  align-items: center;
+  margin-top: 20px;
+}
+
+.upload-container label {
+  flex: 0 0 170px;
+}
+
+.upload-container input {
+  flex: 0 0 330px; 
+  margin-right: 10px;
+}
+
+input#file-button {
+  white-space: nowrap;
+  flex: 0 0 auto;
+  padding: 5px 10px;
+  margin-left: 5px;
+}
+
+.upload-container #container a,
+#preview_container a {
+  color: #aaa;
+}
 
 
 

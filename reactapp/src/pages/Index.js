@@ -1,13 +1,28 @@
+// src/pages/Index.js
 import React, { useState, useEffect, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { CsrfContext } from '../contexts/CsrfContext';
+import { UserContext } from '../contexts/UserContext';
 
-const Index = ({ setIsLoggedIn, setUserBalance }) => {
+const Index = () => {
   const [showError, setShowError] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
   const navigate = useNavigate();
-  const csrfToken = useContext(CsrfContext);
   const apiUrl = process.env.REACT_APP_API_URL;
+  const { setUser } = useContext(UserContext);
+
+  useEffect(() => {
+    const checkLoggedInStatus = async () => {
+      const response = await fetch(`${apiUrl}/api/check_logged_in`, {
+        credentials: 'include',
+      });
+      const result = await response.json();
+      if (result.loggedIn) {
+        setUser(result.user);
+        navigate('/home');
+      }
+    };
+    checkLoggedInStatus();
+  }, [apiUrl, setUser, navigate]);
 
   const handleSignup = async (event) => {
     event.preventDefault();
@@ -22,7 +37,6 @@ const Index = ({ setIsLoggedIn, setUserBalance }) => {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'X-CSRF-Token': csrfToken, 
         },
         credentials: 'include',
         body: JSON.stringify(formData),
@@ -30,8 +44,7 @@ const Index = ({ setIsLoggedIn, setUserBalance }) => {
 
       if (response.ok) {
         const data = await response.json();
-        setIsLoggedIn(true);
-        // setUserBalance(data.user.balance);
+        setUser(data.user);
         navigate('/home');
       } else {
         const errorData = await response.json();

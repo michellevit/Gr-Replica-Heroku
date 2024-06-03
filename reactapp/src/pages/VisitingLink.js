@@ -1,52 +1,61 @@
 import React, { useState } from 'react';
+import { loadStripe } from '@stripe/stripe-js';
+import { Elements, CardElement, useStripe, useElements } from '@stripe/react-stripe-js';
 
-const VisitingLink = ({
-  permalink,
-  name,
-  userName,
-  description,
-  previewUrl,
-  price,
-  expiryMonth,
-  expiryYear,
-  handleSubmit
-}) => {
-  const [showError, setShowError] = useState(false);
-  const [errorMessage, setErrorMessage] = useState('');
-  const [cardNumber, setCardNumber] = useState('');
-  const [cardExpiryMonth, setCardExpiryMonth] = useState(expiryMonth);
-  const [cardExpiryYear, setCardExpiryYear] = useState(expiryYear);
-  const [cardSecurityCode, setCardSecurityCode] = useState('');
-  const apiUrl = process.env.REACT_APP_API_URL;
+const stripePromise = loadStripe(process.env.REACT_APP_STRIPE_PUBLIC_KEY);
 
-  const processPayment = async (e) => {
-    e.preventDefault();
-    try {
-      const response = await fetch(`${apiUrl}/l/${permalink}`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/x-www-form-urlencoded',
-        },
-        body: new URLSearchParams({
-          card_number: cardNumber,
-          date_month: cardExpiryMonth,
-          date_year: cardExpiryYear,
-          card_security_code: cardSecurityCode,
-        }).toString(),
-      });
+const VisitingLink = ({ permalink, name, userName, description, previewUrl, price }) => {
+  return (
+    <Elements stripe={stripePromise}>
+      <CheckoutForm
+        permalink={permalink}
+        name={name}
+        userName={userName}
+        description={description}
+        previewUrl={previewUrl}
+        price={price}
+      />
+    </Elements>
+  );
+};
 
-      const data = await response.json();
+const CheckoutForm = ({ permalink, name, userName, description, previewUrl, price }) => {
+  const stripe = useStripe();
+  const elements = useElements();
+  const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
 
-      if (data.success) {
-        setErrorMessage('');
-        window.location.href = data.redirect_url;
-      } else {
-        setErrorMessage(data.error_message);
-        setShowError(true);
-      }
-    } catch (error) {
-      setErrorMessage('An error occurred while processing your payment.');
-      setShowError(true);
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+    if (!stripe || !elements) return;
+
+    const cardElement = elements.getElement(CardElement);
+    setLoading(true);
+
+    const { error, paymentMethod } = await stripe.createPaymentMethod({
+      type: 'card',
+      card: cardElement,
+    });
+
+    if (error) {
+      setError(error.message);
+      setLoading(false);
+      return;
+    }
+
+    const response = await fetch(`/api/links/${permalink}/process_payment`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ stripeToken: paymentMethod.id }),
+    });
+
+    const data = await response.json();
+    setLoading(false);
+
+    if (data.error) {
+      setError(data.error);
+    } else {
+      window.location.href = data.redirect_url;
     }
   };
 
@@ -64,66 +73,15 @@ const VisitingLink = ({
           </div>
         )}
 
-        <form id="large-form" name="large-form" onSubmit={processPayment}>
+        <form id="large-form" onSubmit={handleSubmit}>
           {previewUrl && <a href={previewUrl} id="preview_link" target="_blank" rel="noopener noreferrer">preview</a>}
-
           <h3>Pay ${price}</h3>
 
-          {showError && <h3 className="error">{errorMessage}</h3>}
-          <p>
-            <label htmlFor="card_number">Card Number:</label>
-            <input
-              id="card_number"
-              name="card_number"
-              placeholder="Card number"
-              size="30"
-              type="text"
-              value={cardNumber}
-              onChange={(e) => setCardNumber(e.target.value)}
-            />
-          </p>
-
-          <p id="expiry_p">
-            <label htmlFor="date_month">Card Expiry Date:</label>
-            <select
-              id="date_month"
-              name="date_month"
-              value={cardExpiryMonth}
-              onChange={(e) => setCardExpiryMonth(e.target.value)}
-            >
-              {Array.from({ length: 12 }, (_, i) => i + 1).map((month) => (
-                <option key={month} value={month}>{new Date(0, month - 1).toLocaleString('en', { month: 'long' })}</option>
-              ))}
-            </select>
-            <span id="slash">/</span>
-            <select
-              id="date_year"
-              name="date_year"
-              value={cardExpiryYear}
-              onChange={(e) => setCardExpiryYear(e.target.value)}
-            >
-              {Array.from({ length: 20 }, (_, i) => new Date().getFullYear() + i).map((year) => (
-                <option key={year} value={year}>{year}</option>
-              ))}
-            </select>
-          </p>
-
-          <p>
-            <label htmlFor="card_security_code">Card Security Code:</label>
-            <input
-              id="card_security_code"
-              name="card_security_code"
-              placeholder="Security code"
-              size="10"
-              type="text"
-              value={cardSecurityCode}
-              onChange={(e) => setCardSecurityCode(e.target.value)}
-            />
-          </p>
-
-          <p className="last-p"><button type="submit" id="submit_button">Pay</button></p>
-
-          <div className="rainbow bar"></div>
+          {error && <h3 className="error">{error}</h3>}
+          <CardElement />
+          <button type="submit" disabled={loading}>
+            {loading ? 'Processing...' : `Pay $${price}`}
+          </button>
         </form>
       </div>
     </div>

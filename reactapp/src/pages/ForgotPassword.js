@@ -15,15 +15,15 @@ const ForgotPassword = () => {
         headers: {
           'Content-Type': 'application/json',
         },
+        credentials: 'include',
         body: JSON.stringify({ email: emailAddress }),
       });
-
       const data = await response.json();
       if (response.ok) {
-        setSuccessMessage(data.message);
+        setSuccessMessage(data.message || 'A reset password link has been sent to your email.');
         setShowError(false);
       } else {
-        setErrorMessage(data.error);
+        setErrorMessage(data.error || 'An error occurred. Please try again.');
         setShowError(true);
       }
     } catch (error) {

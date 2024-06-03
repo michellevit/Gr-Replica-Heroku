@@ -1,32 +1,36 @@
 import React, { useState, useContext } from 'react';
-import { CsrfContext } from '../contexts/CsrfContext';
+import { UserContext } from '../contexts/UserContext';
+import { useNavigate } from 'react-router-dom';
 
-const ForgotPassword = () => {
+const ResetPassword = ({ resetHash }) => {
   const [showError, setShowError] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
   const [successMessage, setSuccessMessage] = useState('');
   const [emailAddress, setEmailAddress] = useState('');
-  const csrfToken = useContext(CsrfContext);
+  const [password, setPassword] = useState('');
   const apiUrl = process.env.REACT_APP_API_URL;
+  const { setUser } = useContext(UserContext);
+  const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await fetch(`${apiUrl}/api/forgot_password`, {
+      const response = await fetch(`${apiUrl}/api/reset_password`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'X-CSRF-Token': csrfToken,
         },
-        body: JSON.stringify({ email: emailAddress }),
+        body: JSON.stringify({ email: emailAddress, password, resetHash }),
       });
 
       const data = await response.json();
       if (response.ok) {
-        setSuccessMessage(data.message);
+        setUser(data.user);
+        setSuccessMessage(data.message || 'Password reset successfully. You can now log in with your new password.');
         setShowError(false);
+        navigate('/home');
       } else {
-        setErrorMessage(data.error);
+        setErrorMessage(data.error || 'An error occurred. Please try again.');
         setShowError(true);
       }
     } catch (error) {
@@ -39,12 +43,12 @@ const ForgotPassword = () => {
     <div>
       <form id="large-form" onSubmit={handleSubmit}>
         {showError ? (
-          <h3>Enter your email address <small className="error">{errorMessage}</small></h3>
+          <h3>Reset your password <small className="error">{errorMessage}</small></h3>
         ) : (
           successMessage ? (
             <h3>{successMessage}</h3>
           ) : (
-            <h3>Enter your email address <small>And don't worry about forgetting your password, we do too!</small></h3>
+            <h3>Reset your password <small>And don't worry about forgetting your password, we do too!</small></h3>
           )
         )}
         <p>
@@ -55,7 +59,14 @@ const ForgotPassword = () => {
             value={emailAddress}
             onChange={(e) => setEmailAddress(e.target.value)}
           />
-          <button type="submit">Send email</button>
+          <input
+            name="password"
+            type="password"
+            placeholder="Password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+          />
+          <button type="submit">Reset Password and Login</button>
         </p>
         <div className="rainbow bar"></div>
       </form>
@@ -64,4 +75,4 @@ const ForgotPassword = () => {
   );
 };
 
-export default ForgotPassword;
+export default ResetPassword;

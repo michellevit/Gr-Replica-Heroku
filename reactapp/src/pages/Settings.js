@@ -1,20 +1,48 @@
-import React, { useState } from 'react';
+import React, { useState, useContext, useEffect } from 'react';
+import { UserContext } from '../contexts/UserContext';
 
-
-const Account = () => {
+const Settings = () => {
+  const { user, setUser } = useContext(UserContext);
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [paymentAddress, setPaymentAddress] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
+  const apiUrl = process.env.REACT_APP_API_URL;
 
-  const handleSubmit = (e) => {
+  useEffect(() => {
+    if (user) {
+      setName(user.name || '');
+      setEmail(user.email || '');
+      setPaymentAddress(user.payment_address || '');
+    }
+  }, [user]);
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // Handle form submission logic here
+    try {
+      const response = await fetch(`${apiUrl}/api/update_user`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        credentials: 'include',
+        body: JSON.stringify({ name, email, payment_address: paymentAddress }),
+      });
+      if (response.ok) {
+        const updatedUser = await response.json();
+        setUser(updatedUser);
+        setErrorMessage('');
+      } else {
+        setErrorMessage('Failed to update user details.');
+      }
+    } catch (error) {
+      setErrorMessage('An error occurred. Please try again.');
+    }
   };
 
   return (
     <div>
-      <form id="large-form" action="/settings" method="post" onSubmit={handleSubmit}>
+      <form id="large-form" onSubmit={handleSubmit}>
         {errorMessage ? (
           <h3>Your account settings <small className="error">{errorMessage}</small></h3>
         ) : (
@@ -63,4 +91,4 @@ const Account = () => {
   );
 };
 
-export default Account;
+export default Settings;

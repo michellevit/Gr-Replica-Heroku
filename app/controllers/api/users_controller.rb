@@ -1,20 +1,11 @@
-# app/controllers/api/users_controller.rb
 module Api
   class UsersController < BaseController
-    protect_from_forgery with: :null_session
+    protect_from_forgery with: :null_session, if: -> { request.format.json? }
 
     def create
-      Rails.logger.info("Received parameters: #{params.inspect}")
-
-      # Extract the email and password from the parameters
-      email = params[:email]
-      password = params[:password]
-      user_params = { email: email, password: password }
-
-      Rails.logger.info("Permitted user parameters: #{user_params.inspect}")
+      user_params = { email: params[:email], password: params[:password] }
 
       user = User.new(user_params)
-      Rails.logger.info("User object before save: #{user.inspect}")
 
       if user.save
         Rails.logger.info("User created successfully: #{user.inspect}")
@@ -24,6 +15,25 @@ module Api
         Rails.logger.error("User creation failed: #{user.errors.full_messages.join(', ')}")
         render json: { error: user.errors.full_messages.join(', ') }, status: :unprocessable_entity
       end
+    end
+
+    def update
+      user = current_user
+      if user
+        if user.update(user_params)
+          render json: user, status: :ok
+        else
+          render json: { error: user.errors.full_messages.join(', ') }, status: :unprocessable_entity
+        end
+      else
+        render json: { error: 'User not found or not logged in' }, status: :unauthorized
+      end
+    end
+
+    private
+
+    def user_params
+      params.require(:user).permit(:name, :email, :payment_address)
     end
   end
 end

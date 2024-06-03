@@ -1,6 +1,11 @@
-import React from 'react';
+import React, { useContext } from 'react';
+import { UserContext } from '../contexts/UserContext';
 
-const Header = ({ showLoginLink, loggedIn, userBalance, handleLogout, onLinksPage }) => {
+const Header = ({ onLinksPage, handleLogout }) => {
+  const { user } = useContext(UserContext);
+  const loggedIn = !!user;
+  const userBalance = user?.balance || 0;
+
   return (
     <div>
       <div id="header">
@@ -13,7 +18,7 @@ const Header = ({ showLoginLink, loggedIn, userBalance, handleLogout, onLinksPag
             {!onLinksPage ? <a href="/links">Your links</a> : <a href="/home">Home</a>} &bull; 
             <span className="balance">${userBalance}</span> &bull; 
             <a href="/settings">Settings</a> &bull; 
-            <button onClick={handleLogout} >Logout</button>
+            <button onClick={handleLogout}>Logout</button>
           </p>
         )}
 

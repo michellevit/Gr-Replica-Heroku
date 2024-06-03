@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from "react";
+// App.js
+import React, { useContext } from "react";
 import './App.css';
 import { Route, Routes, useNavigate } from "react-router-dom";
 import Header from "./nav/Header";
@@ -6,49 +7,39 @@ import Footer from "./nav/Footer";
 import Home from "./pages/Home";
 import Index from "./pages/Index";
 import About from "./pages/About";
-import Account from "./pages/Settings";
+import Link from "./pages/Link";
 import Login from "./pages/Login";
 import ForgotPassword from "./pages/ForgotPassword";
 import ResetPassword from "./pages/ResetPassword";
 import Settings from "./pages/Settings";
 import Links from "./pages/Links";
 import VisitingLink from "./pages/VisitingLink";
+import WrappedVisitingLink from './pages/WrappedVisitingLink';
 import Stats from "./pages/Stats";
 import Elsewhere from "./pages/Elsewhere";
 import Flickr from "./pages/Flickr";
 import FAQ from "./pages/FAQ";
 import NotFound from "./pages/404";
-import { CsrfProvider } from './contexts/CsrfContext';
+import { UserContext } from "./contexts/UserContext";
 
 function App() {
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [userBalance, setUserBalance] = useState(0);
-  const apiUrl = process.env.REACT_APP_API_URL;
+  const { user, setUser } = useContext(UserContext);
   const navigate = useNavigate();
 
-  useEffect(() => {
-    const checkLoggedInStatus = async () => {
-      const response = await fetch(`${apiUrl}/api/check_logged_in`, {
-        credentials: 'include'
-      });
-      const result = await response.json();
-      setIsLoggedIn(result.loggedIn);
-      if (result.loggedIn) {
-        setUserBalance(result.user.balance);
-      }
-    };
-    checkLoggedInStatus();
-  }, [apiUrl]);
 
   const handleLogout = async () => {
+    const apiUrl = process.env.REACT_APP_API_URL;
     try {
       const response = await fetch(`${apiUrl}/api/logout`, {
         method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+        },
         credentials: 'include',
       });
       if (response.ok) {
-        setIsLoggedIn(false);
-        navigate('/login');
+        setUser(null);
+        navigate('/'); 
       } else {
         console.error('Error logging out: ', response.statusText);
       }
@@ -58,48 +49,39 @@ function App() {
   };
 
   return (
-    <CsrfProvider>
-        <div className="app">
-          <div className="top-bar"></div>
-          <div id="wrapper">
-            <Header 
-              showLoginLink={!isLoggedIn} 
-              loggedIn={isLoggedIn} 
-              userBalance={userBalance} 
-              handleLogout={handleLogout} 
-            />
-            <div className="container">
-              <Routes>
-              <Route path="/" element={<Index setIsLoggedIn={setIsLoggedIn} setUserBalance={setUserBalance} />} />
-                <Route path="/home" element={<Home 
-                                              showError={false} 
-                                              errorMessage="" 
-                                              numberOfDays={30} 
-                                              showChart={true} 
-                                              chartMax={100} 
-                                              chartNumbers="50,60,70,80,90,100" 
-                                              lastSevenDaysPurchaseTotal={100} 
-                                              lastMonthPurchaseTotal={500} 
-                                              purchaseTotal={1000} 
-                                            />} />
-                <Route path="/about" element={<About />} />
-                <Route path="/settings" element={<Settings />} />
-                <Route path="/login" element={<Login setIsLoggedIn={setIsLoggedIn} setUserBalance={setUserBalance} />} />
-                <Route path="/forgot-password" element={<ForgotPassword />} />
-                <Route path="/resetpassword" element={<ResetPassword />} />
-                <Route path="/links" element={<Links />} />
-                <Route path="/visitinglink" element={<VisitingLink />} />
-                <Route path="/stats" element={<Stats />} />
-                <Route path="/elsewhere" element={<Elsewhere />} />
-                <Route path="/flickr" element={<Flickr />} />
-                <Route path="/faq" element={<FAQ />} />
-                <Route path="*" element={<NotFound />} />
-              </Routes>
-            </div>
-          </div>
-          <Footer />
+    <div className="app">
+      <div className="top-bar"></div>
+      <div id="wrapper">
+        <Header 
+          onLinksPage={false} 
+          handleLogout={handleLogout}
+        />
+        <div className="container">
+          <Routes>
+            <Route path="/" element={<Index />} />
+            <Route path="/home" element={<Home />} />
+            <Route path="/about" element={<About />} />
+            <Route path="/settings" element={<Settings />} />
+            <Route path="/login" element={<Login />} />
+            <Route path="/forgot-password" element={<ForgotPassword />} />
+            <Route path="/resetpassword" element={<ResetPassword />} />
+            <Route path="/links" element={<Links />} />
+            <Route path="/add" element={<Link />} />
+            <Route path="/stats" element={<Stats />} />
+            <Route path="/elsewhere" element={<Elsewhere />} />
+            <Route path="/flickr" element={<Flickr />} />
+            <Route path="/faq" element={<FAQ />} />
+            <Route path="/add" element={<Link />} />
+            <Route path="/visiting-link" element={<VisitingLink />} />
+            <Route path="/edit-link/:id" element={<Link editing />} />
+            <Route path="/links" element={<Links />} />
+            <Route path="/l/:permalink" element={<WrappedVisitingLink />} />
+            <Route path="*" element={<NotFound />} />
+          </Routes>
         </div>
-    </CsrfProvider>
+      </div>
+      <Footer />
+    </div>
   );
 }
 

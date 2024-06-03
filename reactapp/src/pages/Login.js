@@ -1,43 +1,41 @@
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useState, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { CsrfContext } from '../contexts/CsrfContext';
+import { UserContext } from '../contexts/UserContext';
 
-const Login = ({ setIsLoggedIn, setUserBalance }) => {
+const Login = () => {
   const [showError, setShowError] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
   const [emailAddress, setEmailAddress] = useState('');
   const navigate = useNavigate();
-  const csrfToken = useContext(CsrfContext); 
   const apiUrl = process.env.REACT_APP_API_URL;
+  const { setUser } = useContext(UserContext);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!csrfToken) {
+    try {
+      const response = await fetch(`${apiUrl}/api/login`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        credentials: 'include', 
+        body: JSON.stringify({
+          email: emailAddress,
+          password: e.target.password.value
+        })
+      });
+      const data = await response.json();
+      if (response.ok) {
+        setShowError(false);
+        setUser(data.user);
+        navigate('/home');
+      } else {
+        setShowError(true);
+        setErrorMessage(data.error);
+      }
+    } catch (error) {
       setShowError(true);
-      setErrorMessage('CSRF token not found.');
-      return;
-    }
-    const response = await fetch(`${apiUrl}/api/login`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'X-CSRF-Token': csrfToken 
-      },
-      credentials: 'include', 
-      body: JSON.stringify({
-        email: emailAddress,
-        password: e.target.password.value
-      })
-    });
-    const data = await response.json();
-    if (response.ok) {
-      setShowError(false);
-      setIsLoggedIn(true);
-      setUserBalance(data.user.balance);
-      navigate('/home');
-    } else {
-      setShowError(true);
-      setErrorMessage(data.error);
+      setErrorMessage('An error occurred. Please try again.');
     }
   };
 

@@ -1,14 +1,14 @@
+# app/models/user.rb
 class User < ApplicationRecord
   has_secure_password
-  
-  validates :email, presence: true, uniqueness: true, format: { with: URI::MailTo::EMAIL_REGEXP }
-  validates :password, presence: true, length: { minimum: 6 }
-  validates :balance, numericality: { greater_than_or_equal_to: 0 }
+
+  validates :email, presence: true, uniqueness: { case_sensitive: false }, format: { with: URI::MailTo::EMAIL_REGEXP }
+  validates :password, presence: true, length: { minimum: 6 }, if: -> { new_record? || !password.nil? }
 
   def generate_password_token!
     self.reset_password_token = generate_token
     self.reset_password_sent_at = Time.now.utc
-    save!
+    save(validate: false)  
   end
 
   def password_token_valid?

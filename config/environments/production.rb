@@ -73,6 +73,19 @@ Rails.application.configure do
 
   config.action_mailer.perform_caching = false
 
+  # Mailer configuration
+  config.action_mailer.delivery_method = :smtp
+  config.action_mailer.smtp_settings = {
+    address:              ENV['EMAIL_HOST'],
+    port:                 ENV['EMAIL_PORT'],
+    domain:               'gr-replica.michellef.dev',
+    user_name:            ENV['EMAIL_USER'],
+    password:             ENV['EMAIL_PASS'],
+    authentication:       'plain',
+    enable_starttls_auto: true
+  }
+  config.action_mailer.default_url_options = { host: 'michellef.dev' }
+
   # Ignore bad email addresses and do not raise email delivery errors.
   # Set this to true and configure the email server for immediate delivery to raise delivery errors.
   # config.action_mailer.raise_delivery_errors = false
@@ -87,7 +100,6 @@ Rails.application.configure do
   # Do not dump schema after migrations.
   config.active_record.dump_schema_after_migration = false
 
-  
   config.public_file_server.enabled = ENV['RAILS_SERVE_STATIC_FILES'].present?
 
   # Enable DNS rebinding protection and other `Host` header attacks.
