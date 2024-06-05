@@ -9,7 +9,7 @@
 
 A rebuild of Gumroad's V1 website, from a Python-JS app deployed on App Engine, to a Rails-React app deployed on Heroku with a PostgreSQL database.
 
-<a href="https://gr-replica.michellef.dev" target="_blank"><img src="https://img.shields.io/badge/Website-red?style=for-the-badge&logo=ruby&color=cc0000"></a><br>
+<a href="https://gr-replica.michellef.dev" target="_blank"><img src="https://img.shields.io/badge/Website-red?style=for-the-badge&logo=ruby&color=FF90E8"></a><br>
 <a href="https://www.youtube.com/watch?v=UUC9QnTv_fQ&t=57s&ab_channel=Michelle" target="_blank"><img src="https://img.shields.io/badge/YouTube-Demo-red?style=for-the-badge&logo=youtube&color=FF0000"></a>
 
 
