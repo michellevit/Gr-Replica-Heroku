@@ -7,6 +7,8 @@
 ![Heroku](https://img.shields.io/badge/Platform-Heroku-6762a6.svg)
 
 
+A rebuild of Gumroad's V1 website, from a Python-JS app deployed on App Engine, to a Rails-React app deployed on Heroku with a PostgreSQL database.
+
 <a href="https://gr-replica.michellef.dev" target="_blank"><img src="https://img.shields.io/badge/Website-red?style=for-the-badge&logo=ruby"></a><br>
 <a href="https://www.youtube.com/watch?v=UUC9QnTv_fQ&t=57s&ab_channel=Michelle" target="_blank"><img src="https://img.shields.io/badge/YouTube-Demo-red?style=for-the-badge&logo=youtube"></a>
 
