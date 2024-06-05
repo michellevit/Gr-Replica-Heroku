@@ -15,6 +15,10 @@
 - [To Do](#to-do)
 
 
+<a href="https://gr-replica.michellef.dev" target="_blank"><img src="https://img.shields.io/badge/Demo-6da360?style=for-the-badge&logo=rails"></a>
+
+
+
 ## Prerequisites<a name="prerequisites"></a>
 - A GitHub account
 - Git installed on your computer
