@@ -1,4 +1,4 @@
-# Gumroad Replica Project
+# Gumroad Hackathon Project
 
 ![Ruby Version](https://img.shields.io/badge/Ruby-3.2.3-cc0000.svg)
 ![Rails Version](https://img.shields.io/badge/Rails-7.1.3-cc0000.svg)
